@@ -1,4 +1,4 @@
-import json, os, re, urllib.request, urllib.error, base64, hmac
+import json, os, re, urllib.request, urllib.error
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlsplit
 
@@ -9,29 +9,6 @@ def settings():
     except (OSError, ValueError): return {'evcc_url':'http://hass.nummer63.nl:7070','api_key':'','timezone':'Europe/Amsterdam'}
 
 class Handler(BaseHTTPRequestHandler):
-    def authorized(self):
-        cfg=settings()
-        password=cfg.get('companion_password','')
-        # All requests require credentials when enabled, including static assets.
-        # Do not expose a standalone port without setting a strong password.
-        if not password:
-            return True
-        value=self.headers.get('Authorization','')
-        if not value.startswith('Basic '):
-            return False
-        try:
-            decoded=base64.b64decode(value[6:],validate=True).decode('utf-8')
-            username,sep,provided=decoded.partition(':')
-            return bool(sep) and hmac.compare_digest(username,'companion') and hmac.compare_digest(provided,password)
-        except (ValueError,UnicodeDecodeError):
-            return False
-    def unauthorized(self):
-        self.send_response(401)
-        self.send_header('WWW-Authenticate','Basic realm="EVCC Companion", charset="UTF-8"')
-        self.send_header('Cache-Control','no-store')
-        self.send_header('Content-Length','0')
-        self.end_headers()
-
     def reply(self, status, data, ctype='application/json'):
         body=data if isinstance(data,bytes) else json.dumps(data).encode()
         self.send_response(status)
@@ -43,8 +20,6 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self): self.handle_request('GET')
     def do_POST(self): self.handle_request('POST')
     def handle_request(self,method):
-        if not self.authorized():
-            self.unauthorized(); return
         path=urlsplit(self.path).path
         if path in ('/manifest.webmanifest','/icon.svg') and method=='GET':
             filename='manifest.webmanifest' if path.endswith('webmanifest') else 'icon.svg'

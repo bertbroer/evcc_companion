@@ -1,5 +1,5 @@
 name: EVCC Companion
-version: "0.2.0"
+version: "0.4.0"
 slug: evcc_companion
 description: Minimal evcc dashboard and weekly recurring charging planner
 arch:
@@ -18,10 +18,8 @@ ports_description:
 options:
   evcc_url: "http://hass.nummer63.nl:7070"
   api_key: ""
-  companion_password: ""
   timezone: "Europe/Amsterdam"
 schema:
   evcc_url: str
   api_key: password?
-  companion_password: password?
   timezone: str
