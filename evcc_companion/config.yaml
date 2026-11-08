@@ -1,5 +1,5 @@
 name: EVCC Companion
-version: "0.1.0"
+version: "0.2.0"
 slug: evcc_companion
 description: Minimal evcc dashboard and weekly recurring charging planner
 arch:
@@ -11,11 +11,17 @@ ingress: true
 ingress_port: 8099
 panel_icon: mdi:car-electric
 panel_title: EVCC Companion
+ports:
+  8099/tcp: null
+ports_description:
+  8099/tcp: EVCC Companion standalone web UI
 options:
   evcc_url: "http://hass.nummer63.nl:7070"
   api_key: ""
+  companion_password: ""
   timezone: "Europe/Amsterdam"
 schema:
   evcc_url: str
   api_key: password?
+  companion_password: password?
   timezone: str
