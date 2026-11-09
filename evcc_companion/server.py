@@ -3,6 +3,7 @@ from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlsplit
 
 OPTIONS='/data/options.json'
+ASSETS={'/manifest.webmanifest':'application/manifest+json','/icon.svg':'image/svg+xml','/apple-touch-icon.png':'image/png'}
 def settings():
     try:
         with open(OPTIONS) as f: return json.load(f)
@@ -21,10 +22,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self): self.handle_request('POST')
     def handle_request(self,method):
         path=urlsplit(self.path).path
-        if path in ('/manifest.webmanifest','/icon.svg') and method=='GET':
-            filename='manifest.webmanifest' if path.endswith('webmanifest') else 'icon.svg'
-            with open('/app/www/'+filename,'rb') as f:
-                self.reply(200,f.read(),'application/manifest+json' if filename.endswith('webmanifest') else 'image/svg+xml')
+        if path in ASSETS and method=='GET':
+            with open('/app/www'+path,'rb') as f: self.reply(200,f.read(),ASSETS[path])
             return
         if path in ('/','/index.html') and method=='GET':
             with open('/app/www/index.html','rb') as f: self.reply(200,f.read(),'text/html; charset=utf-8')

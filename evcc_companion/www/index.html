@@ -1,115 +1,779 @@
 <!DOCTYPE html>
+<html lang="nl" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="google" content="notranslate">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f2f7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="EVCC">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>EVCC</title>
+<style>
+/* Kleuren volgen de iOS-systeemkleuren; groen en blauw zijn het eigen accent. */
+:root{
+  color-scheme:light dark;
+  --bg:#f2f2f7;--card:#fff;--raised:#fff;
+  --label:#000;--label-2:rgba(60,60,67,.62);--label-3:rgba(60,60,67,.3);
+  --sep:rgba(60,60,67,.18);--track:rgba(120,120,128,.16);--press:rgba(120,120,128,.14);
+  --tint:#3e7d48;--on-tint:#fff;--battery:#6d9e6a;--blue:#3b8cb7;
+  --warn:#a86200;--bad:#c8463a;
+  --glass:rgba(255,255,255,.72);--glass-line:rgba(255,255,255,.7);
+  --shadow:0 8px 30px rgba(0,0,0,.12);
+  --thumb:#fff;--scrim:rgba(0,0,0,.28);
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><meta content="#f2f1ea" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="EVCC Companion" name="apple-mobile-web-app-title"/><link href="manifest.webmanifest" rel="manifest"/><link href="icon.svg" rel="icon" type="image/svg+xml"/><title>EVCC Companion</title><style>
-:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;color:#242923;background:#f2f1ea}*{box-sizing:border-box}body{margin:0}.app{max-width:560px;margin:auto;padding:26px 19px 110px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}.brand{font-size:12px;letter-spacing:.19em;font-weight:800}.pill{background:#e1e7db;padding:7px 11px;border-radius:20px;font-size:12px;color:#47614a}.pill.bad{background:#f7dddd;color:#8d3434}h1{font-size:35px;letter-spacing:-1.5px;line-height:1.1;margin:0 0 10px}h2{font-size:20px;margin:0}.sub{color:#757a71;font-size:14px;line-height:1.5}.card{background:#fff;border-radius:23px;padding:21px;margin-top:15px;box-shadow:0 2px 18px #28342508}.line{display:flex;justify-content:space-between;align-items:center;gap:10px}.big{font-size:50px;letter-spacing:-2px;font-weight:650}.muted{color:#777e73;font-size:12px}.progress{height:9px;background:#e7eae2;border-radius:99px;overflow:hidden;margin:17px 0}.progress div{height:100%;background:#60856a;width:0;transition:width .4s}.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}.phase{background:#f3f4ef;border-radius:14px;padding:12px;text-align:center}.phase strong{display:block;font-size:20px;margin-top:5px}.phasebar{height:8px;background:#e5e9e1;border-radius:10px;overflow:hidden;margin-top:9px}.phasefill{height:100%;background:#6b9474}.forecast-track{height:48px;background:#eef0ea;border-radius:9px;position:relative;overflow:hidden;margin:14px 0 6px}.forecast-slot{position:absolute;top:0;height:100%;background:#7da786;border-right:1px solid #fff;min-width:2px}.forecast-marker{position:absolute;top:0;bottom:0;border-left:2px dashed #b37c35;z-index:2}.forecast-axis{display:flex;justify-content:space-between;color:#7a8076;font-size:11px}.forecast-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #edf0e9;padding:9px 0;font-size:12px}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{background:#f3f4ef;border-radius:15px;padding:14px}.metric strong{display:block;font-size:19px;margin-top:5px}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}button{font:inherit;cursor:pointer}.mode{padding:17px 8px;background:#f2f3ee;border:1px solid #e4e8df;border-radius:14px;font-weight:650}.mode.active{background:#dfece0;border:2px solid #658d70;color:#2e6942}.mode:disabled{opacity:.5;cursor:wait}.section-title{margin-top:30px}.next{font-size:23px;font-weight:650;margin-top:8px}.nav{position:fixed;bottom:0;left:0;right:0;background:#fbfcf8;border-top:1px solid #e0e5da;display:flex;justify-content:center;padding:12px 10px max(14px,env(safe-area-inset-bottom))}.nav-inner{display:flex;width:min(560px,100%);gap:10px}.tab{flex:1;border:0;background:transparent;padding:12px;border-radius:13px;color:#747b72;font-weight:650}.tab.active{background:#e0eadf;color:#305c3b}.day{background:#fff;border-radius:18px;padding:15px 17px;margin:10px 0;border:1px solid #e5e7df}.day.disabled{background:#e9eae3;color:#898e85}.daytop{display:flex;align-items:center;justify-content:space-between}.dayname{font-weight:700}.dayfields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}label{font-size:12px;color:#777d73;display:block;margin-bottom:6px}input[type=time],select{width:100%;background:#f5f6f2;border:1px solid #dfe3db;border-radius:11px;padding:12px 8px;font:inherit;color:#2b342c}input[type=checkbox]{width:22px;height:22px;accent-color:#668a6e}.save{background:#476e53;color:white;border:0;border-radius:15px;padding:17px;font-weight:700;width:100%;margin-top:18px}.save:disabled{opacity:.5}.notice{padding:13px 15px;border-radius:13px;background:#fff0dd;color:#765526;font-size:13px;margin:15px 0}.notice.error{background:#f9e1e1;color:#8a3434}.notice.ok{background:#e2efe3;color:#315c39}.hidden{display:none}.footer{font-size:12px;color:#81877d;margin-top:14px}a{color:#426a4c}
-</style><style>
-/* v0.5: restrained, mobile-first app refinements */
-:root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#233044;background:#f7f8f7}
-body{background:#f7f8f7}.app{max-width:560px;padding:27px 20px 112px}
-.brand{letter-spacing:.12em;font-size:11px;font-weight:700;color:#49617a}.top{margin-bottom:30px}
-h1,h2,.next,.big{font-family:"DM Sans",Inter,ui-sans-serif,system-ui,sans-serif}
-h1{font-size:34px;letter-spacing:-1.15px;font-weight:650}h2{font-size:19px;font-weight:650;letter-spacing:-.35px}
-.sub{color:#7a8490}.muted,label,.footer{color:#7b8490}
-.card{border:1px solid #e5e9ed;border-radius:12px;padding:20px;box-shadow:0 1px 3px #14293d06;background:#fff}
-.metric{background:#f4f7f9;border-radius:9px;padding:14px}.metric strong{font-family:"DM Sans",Inter,sans-serif;font-weight:650}
-.big{font-weight:650;letter-spacing:-1.8px}.progress{background:#e9eef0;height:8px}.progress div{background:#6b9b80}
-.phase{border-radius:9px;background:#f5f7f8;padding:11px 7px}.phase strong{font-size:17px;letter-spacing:-.5px}
-.phasebar{height:6px;background:#e1e8ed}.phasefill{background:#78a887}
-.forecast-track{height:30px;background:#eef2f4;border-radius:6px}.forecast-slot{background:#85af91}.forecast-marker{border-color:#7a9ab5}
-.forecast-row{border-bottom-color:#edf0f3}.pill{border-radius:7px;background:#eaf1ed;color:#507b61}.pill.bad{background:#fbe9e9;color:#994646}
-.modes{gap:8px}.mode{border-radius:9px;background:#f6f8f9;border:1px solid #e2e8ed;font-weight:600;padding:16px 8px}
-.mode.active{border:1px solid #719cbd;background:#eaf2f8;color:#2d628a}
-.day{border-radius:11px;border-color:#e5e9ed;box-shadow:none}.day.disabled{background:#f0f2f2}
-input[type=time],select{border-radius:8px;background:#f8fafb;border-color:#e1e7eb}
-input[type=checkbox]{accent-color:#608cae}.save{background:#477da4;border-radius:9px;font-weight:650}
-.nav{background:#fff;border-top:1px solid #e7ebee;box-shadow:0 -3px 15px #13283b05}.nav-inner{gap:5px}
-.tab{border-radius:8px;font-size:13px;padding:12px 6px;color:#7b8791;font-weight:600}
-.tab.active{background:#eaf2f8;color:#316b95}.notice{border-radius:9px}
-.section-title{margin-top:29px}#energy>.section-title:first-of-type{margin-top:23px}
-@media(max-width:375px){.app{padding-left:14px;padding-right:14px}.card{padding:16px}.phase strong{font-size:15px}.tab{font-size:12px}}
-</style><style>
-/* v0.6 — visual fidelity to the selected light app mockup */
-:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#222b32;background:#faf9f6}
-body{background:#faf9f6}.app{max-width:650px;margin:0 auto;padding:20px 18px 44px}
-.top{margin:0 0 22px;min-height:46px;gap:8px}.brand-group{display:flex;align-items:center;gap:12px;min-width:0}
-.brand-icon{display:grid;place-items:center;width:37px;height:37px;background:#e8f1f5;color:#3b8cb7;border-radius:10px;font-size:24px}
-.brand{font-size:21px;letter-spacing:-.6px;color:#1d2428;font-weight:750;white-space:nowrap}
-.pill{font-size:12px;border-radius:99px;padding:7px 10px;background:#eff5ec;color:#496d46;white-space:nowrap}
-.pill:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#65b548;margin-right:7px;vertical-align:1px}
-.pill.bad{background:#fbece9;color:#9b5145}.pill.bad:before{background:#d65c4d}
-.nav{position:static;display:block;padding:0;margin:0 0 23px;background:#eff0f1;border:0;border-radius:12px;box-shadow:none;overflow:hidden}
-.nav-inner{width:100%;display:grid;grid-template-columns:1fr 1.12fr 1.55fr;gap:0}
-.tab{min-width:0;border:0;border-radius:10px;background:transparent;color:#3d454a;padding:13px 5px;font-size:12px;font-weight:550;line-height:1.25}
-.tab.active{background:#6d9e6a;color:#fff;font-weight:700}
-section>h1{font-size:25px;letter-spacing:-.8px;margin:5px 0 9px}.screen-subtitle{font-size:14px;color:#7d8589;margin:4px 0 14px}
-.card{background:#fff;border:1px solid #e7e8e5;border-radius:13px;padding:17px 16px;margin:14px 0 22px;box-shadow:0 2px 10px rgba(27,41,47,.035)}
-.card-heading{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:750;letter-spacing:-.55px;margin:0 0 16px}
-.section-icon{display:grid;place-items:center;flex:0 0 35px;width:35px;height:35px;border-radius:9px;background:#e9f3e4;color:#61984e;font-size:23px;font-weight:700}
-#energy>.card:nth-of-type(2) .section-icon{background:#e8f1f6;color:#4e91b3}
-.metrics{gap:11px}.metric{padding:14px 13px;border-radius:10px;background:#edf4f8;min-height:76px}
-.metric:nth-child(2){background:#f0f5eb}.metric .muted{display:block;font-size:12px;color:#59666c;line-height:1.35}
-.metric strong{font-family:Inter,-apple-system,sans-serif;font-size:23px;letter-spacing:-.5px;font-weight:750;color:#17252b;margin-top:6px}
-.sub{color:#69767b;font-size:12px;line-height:1.45}.muted,label,.footer{color:#79858a}
-#energy .line strong{font-size:13px}#energy .line{gap:6px}
-.phase-grid{gap:8px;margin-top:12px}.phase{background:#f6f7f6;border-radius:10px;text-align:left;padding:11px 9px}
-.phase .muted{font-weight:750;font-size:12px;color:#29363a}.phase strong{font-size:15px;font-weight:750;letter-spacing:-.5px;margin:4px 0 0;white-space:nowrap}
-.phasebar{height:6px;background:#dfe4e6;border-radius:99px;margin-top:11px}.phasefill{background:#69b65b}
-#energy .card .line[style]{border-top:1px solid #eef0ee;padding-top:12px;margin-top:14px!important}
-#energy .card .line[style]+.line{border-top:0}.forecast-track{height:22px;background:#eef1f2;border-radius:6px;margin:20px 0 9px}
-.forecast-slot{background:#76b66c}.forecast-marker{border-color:#5c9bb9}.forecast-row{font-size:12px;padding:11px 0;border-bottom:1px solid #ecefec;gap:8px}
-.forecast-axis{font-size:10px}.forecast-row span:last-child{white-space:nowrap;color:#57646b}
-.big{font-size:56px;letter-spacing:-2px;font-weight:750;color:#24343a}.progress{background:#e9eeec}.progress div{background:#76ac73}
-.section-title{font-size:18px;margin-top:24px}.mode{background:#f5f7f7;border:1px solid #e0e5e7;border-radius:10px;padding:16px 5px}
-.mode.active{background:#e5f0f6;color:#3575a0;border-color:#79a7c6}.next{font-size:20px}.day{border-radius:11px}.save{border-radius:10px;background:#689b6c}
-@media(max-width:390px){.app{padding:15px 12px 30px}.brand{font-size:18px}.top{margin-bottom:17px}.tab{font-size:11px;padding:12px 3px}.card{padding:15px 12px}.metric{padding:12px 9px}.metric strong{font-size:20px}.phase{padding:10px 6px}.phase strong{font-size:13px}.card-heading{font-size:18px}.pill{font-size:11px;padding:6px 8px}}
-</style></head><body><div class="app"><header class="top"><div class="brand-group"><span class="brand-icon">⚡</span><strong class="brand">EVCC Companion</strong></div><span class="pill bad" id="status">Connecting…</span></header><nav class="nav"><div class="nav-inner"><button class="tab active" data-tab="home">Charging</button><button class="tab" data-tab="planning">Weekly planner</button><button class="tab" data-tab="energy">Electricity &amp; Forecast</button></div></nav><section id="home"><div class="screen-subtitle" id="vehicleTitle">Your electric vehicle</div><div class="card"><div class="line"><span class="muted">BATTERY LEVEL</span><span class="muted" id="connection">Waiting for evcc</span></div><div class="big"><span id="soc">—</span><span style="font-size:26px">%</span></div><div class="progress"><div id="socBar"></div></div><div class="metrics"><div class="metric"><span class="muted">Charging power</span><strong id="power">—</strong></div><div class="metric"><span class="muted">Electricity price</span><strong id="price">—</strong></div></div></div><h2 class="section-title">Charging mode</h2><div class="card"><div class="sub">Choose how evcc should charge your car.</div><div class="modes"><button class="mode" data-mode="off">Off</button><button class="mode" data-mode="smart">Smart</button><button class="mode" data-mode="now">Now</button></div></div><h2 class="section-title">Next departure</h2><div class="card"><div class="muted">WEEKLY CHARGING PLAN</div><div class="line"><div class="next" id="next">No plan set</div><strong id="nextSoc"></strong></div><div class="sub" style="margin-top:8px">Repeats every week until you change it</div></div><div class="footer">Live values from evcc. Smart and Now use evcc's charging modes.</div></section><section class="hidden" id="planning"><h1>Weekly planner</h1><p class="sub">Select the days you need your car. Set when it should be ready and your target battery level. Your schedule repeats every week.</p><div id="days"></div><button class="save" disabled="" id="save">Save weekly schedule</button><div class="footer">Saving replaces this vehicle's existing repeating plans in evcc. One-off plans are not changed.</div></section><section class="hidden" id="energy"><div class="card"><h2 class="card-heading"><span class="section-icon">ϟ</span><span>Electricity overview</span></h2><div class="metrics"><div class="metric"><span class="muted">Total house · incl. charger</span><strong id="housePower">—</strong></div><div class="metric"><span class="muted">EV charger</span><strong id="chargerPower">—</strong></div></div><div class="line" style="margin-top:18px"><strong>Grid phase currents</strong><span class="muted" id="balanceStatus">Checking…</span></div><div class="sub">HomeWizard P1 · limit 23 A per phase</div><div class="phase-grid"><div class="phase"><span class="muted">L1</span><strong id="grid1">—</strong><div class="phasebar"><div class="phasefill" id="gridBar1"></div></div></div><div class="phase"><span class="muted">L2</span><strong id="grid2">—</strong><div class="phasebar"><div class="phasefill" id="gridBar2"></div></div></div><div class="phase"><span class="muted">L3</span><strong id="grid3">—</strong><div class="phasebar"><div class="phasefill" id="gridBar3"></div></div></div></div><div class="line" style="margin-top:16px"><span class="muted">Circuit headroom (smallest phase)</span><strong id="headroom">—</strong></div><div class="line" style="margin-top:8px"><span class="muted">Charger max / effective limit</span><strong id="currentLimit">—</strong></div><div class="sub" style="margin-top:16px">Charger phase currents</div><div class="phase-grid"><div class="phase"><span class="muted">L1</span><strong id="phase1">—</strong></div><div class="phase"><span class="muted">L2</span><strong id="phase2">—</strong></div><div class="phase"><span class="muted">L3</span><strong id="phase3">—</strong></div></div><div class="footer" id="energyNote">Live measurements from evcc.</div></div><div class="card"><h2 class="card-heading"><span class="section-icon">▣</span><span>Charging forecast</span></h2><div class="line"><strong id="forecastHeading">Next departure plan</strong><span class="pill" id="forecastStatus">Checking…</span></div><div class="sub" id="forecastTarget" style="margin-top:7px">Waiting for evcc</div><div id="forecastChart"></div><div class="footer" id="forecastNote">Calculated charging windows from evcc, not guaranteed charging.</div></div></section><div aria-live="polite" id="message" role="status"></div></div><script>
-const weekdays=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];const $=id=>document.getElementById(id);let state=null,vehicle=null,loadpoint=null,timezone='Europe/Amsterdam',dirty=false,initialized=false;let days=weekdays.map(()=>({on:false,time:'07:30',soc:80}));
-function notice(msg,type=''){const el=$('message');el.className='notice '+type;el.textContent=msg;el.scrollIntoView({block:'nearest',behavior:'smooth'});}
-function clearNotice(){$('message').className='';$('message').textContent=''}
-function pickVehicle(s){const lps=s.loadpoints||[];loadpoint=lps.find(x=>x.vehicleName)||lps[0]||null;let key=loadpoint?.vehicleName;const vs=s.vehicles||{};if(!key&&loadpoint?.vehicleTitle)key=Object.keys(vs).find(k=>vs[k]?.title===loadpoint.vehicleTitle);if(!key)key=Object.keys(vs)[0];vehicle=key||null;return key?vs[key]:null}
-function readPlans(v){if(dirty)return;days=weekdays.map(()=>({on:false,time:'07:30',soc:80}));for(const p of v?.repeatingPlans||[]){for(const d of p.weekdays||[]){const idx=(d+6)%7;if(idx>=0&&idx<7&&p.active){days[idx]={on:true,time:p.time||'07:30',soc:p.soc||80}}}}initialized=true;renderDays();renderNext()}
-function renderNext(){const enabled=days.map((d,i)=>({...d,i})).filter(d=>d.on);if(!enabled.length){$('next').textContent='No plan set';$('nextSoc').textContent='';return}const now=new Date();const current=now.getDay();const minute=now.getHours()*60+now.getMinutes();const sorted=enabled.map(d=>({...d,delta:((d.i+1)%7-current+7)%7*1440+Number(d.time.slice(0,2))*60+Number(d.time.slice(3))-minute})).map(d=>({...d,delta:d.delta<0?d.delta+10080:d.delta})).sort((a,b)=>a.delta-b.delta);const d=sorted[0];$('next').textContent=weekdays[d.i]+' · '+d.time;$('nextSoc').textContent=d.soc+'%'}
-function renderDays(){const parent=$('days');parent.replaceChildren();days.forEach((d,i)=>{const card=document.createElement('div');card.className='day'+(d.on?'':' disabled');const top=document.createElement('div');top.className='daytop';const name=document.createElement('span');name.className='dayname';name.textContent=weekdays[i];const check=document.createElement('input');check.type='checkbox';check.checked=d.on;check.setAttribute('aria-label','Enable '+weekdays[i]);check.onchange=()=>{d.on=check.checked;dirty=true;renderDays();renderNext();$('save').disabled=!vehicle};top.append(name,check);card.append(top);if(d.on){const fields=document.createElement('div');fields.className='dayfields';const timeBox=document.createElement('div');const timeLabel=document.createElement('label');timeLabel.textContent='Ready at';const time=document.createElement('input');time.type='time';time.value=d.time;time.onchange=()=>{d.time=time.value;dirty=true;renderNext()};timeBox.append(timeLabel,time);const socBox=document.createElement('div');const socLabel=document.createElement('label');socLabel.textContent='Target SoC';const soc=document.createElement('select');for(let n=10;n<=100;n+=5){const opt=document.createElement('option');opt.value=n;opt.textContent=n+'%';soc.append(opt)}soc.value=String(d.soc);if(!soc.value){const opt=document.createElement('option');opt.value=d.soc;opt.textContent=d.soc+'%';soc.append(opt);soc.value=d.soc}soc.onchange=()=>{d.soc=Number(soc.value);dirty=true;renderNext()};socBox.append(socLabel,soc);fields.append(timeBox,socBox);card.append(fields)}parent.append(card)})}
-async function api(path,opts={}){const r=await fetch('proxy/'+path,{...opts,headers:{'Content-Type':'application/json',...(opts.headers||{})}});let data;try{data=await r.json()}catch{data={}}if(!r.ok)throw new Error(typeof data.error==='string'?data.error:'evcc returned '+r.status);return data}
-function fmtPower(value){return typeof value==='number'&&Number.isFinite(value)?(Math.abs(value)>=1000?(value/1000).toFixed(2)+' kW':Math.round(value)+' W'):'—'}
-function fmtCurrent(value){return typeof value==='number'&&Number.isFinite(value)?value.toFixed(1)+' A':'—'}
-function currents(lp){const c=lp?.chargeCurrents??lp?.chargerCurrents??lp?.phaseCurrents;if(Array.isArray(c))return c;if(c&&typeof c==='object')return [c.l1??c.L1,c.l2??c.L2,c.l3??c.L3];return [lp?.chargeCurrentL1,lp?.chargeCurrentL2,lp?.chargeCurrentL3]}
-function renderEnergy(s){const lps=s.loadpoints||[];const chargerPowers=lps.map(lp=>lp.chargePower);const allKnown=chargerPowers.every(p=>typeof p==='number'&&Number.isFinite(p));const totalCharger=allKnown?chargerPowers.reduce((a,b)=>a+b,0):null;const home=s.homePower;const totalHouse=typeof home==='number'&&Number.isFinite(home)&&totalCharger!==null?home+totalCharger:null;
-$('housePower').textContent=fmtPower(totalHouse);$('chargerPower').textContent=fmtPower(totalCharger);const c=currents(loadpoint);for(let i=0;i<3;i++)$('phase'+(i+1)).textContent=fmtCurrent(c[i]);
-$('energyNote').textContent=totalHouse===null?'Total consumption unavailable: evcc must report homePower and charging power for every loadpoint.': 'House total = evcc homePower + all EV charging power. Phase currents are for the selected charger.';
-const circuit=Object.values(s.circuits||{}).find(c=>c.title==='Loadbalancerp1')||Object.values(s.circuits||{})[0];
-const max=typeof circuit?.maxCurrent==='number'?circuit.maxCurrent:23;
-const grid=s.grid?.currents;let headroom=null;
-for(let i=0;i<3;i++){const a=Array.isArray(grid)?grid[i]:null;$('grid'+(i+1)).textContent=fmtCurrent(a);$('gridBar'+(i+1)).style.width=typeof a==='number'&&max>0?Math.max(0,Math.min(100,Math.abs(a)/max*100))+'%':'0%'}
-if(Array.isArray(grid)&&grid.length>=3&&grid.slice(0,3).every(Number.isFinite))headroom=max-Math.max(...grid.slice(0,3).map(Math.abs));
-$('headroom').textContent=headroom===null?'—':headroom.toFixed(1)+' A';
-const effective=loadpoint?.effectiveMaxCurrent,configured=loadpoint?.maxCurrent;
-$('currentLimit').textContent=Number.isFinite(configured)&&Number.isFinite(effective)?configured+' A / '+effective+' A':'—';
-let label='Unknown';if(loadpoint&&!loadpoint.charging)label='Not charging';else if(Number.isFinite(effective)&&Number.isFinite(configured)){label=effective<configured-0.1?'Charging limited · cause unconfirmed':'No current reduction detected'}
-$('balanceStatus').textContent=label;
-$('energyNote').textContent+=' P1 phase readings are net grid currents (may include solar export); charger currents are shown separately. A reduced current limit alone does not prove load balancing.';
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
+  --rounded:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+
+  --gutter:max(16px,calc((100vw - 560px)/2));
+  --top:max(env(safe-area-inset-top),14px);
+  --tab-h:62px;
+  --tab-bottom:max(14px,calc(env(safe-area-inset-bottom) - 13px));
+  --tab-space:calc(var(--tab-h) + var(--tab-bottom) + 14px);
+  --r-card:24px;
 }
+@media (prefers-color-scheme:dark){:root{
+  --bg:#000;--card:#1c1c1e;--raised:#2c2c2e;
+  --label:#fff;--label-2:rgba(235,235,245,.62);--label-3:rgba(235,235,245,.3);
+  --sep:rgba(84,84,88,.6);--track:rgba(120,120,128,.32);--press:rgba(120,120,128,.26);
+  --tint:#8cc98a;--on-tint:#10240f;--battery:#5f9160;--blue:#64b0d8;
+  --warn:#ffb340;--bad:#ff6961;
+  --glass:rgba(44,44,46,.68);--glass-line:rgba(255,255,255,.1);
+  --shadow:0 8px 30px rgba(0,0,0,.5);
+  --thumb:#636366;--scrim:rgba(0,0,0,.5);
+}}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+body{font:400 17px/22px var(--sans);color:var(--label);-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+[hidden]{display:none!important}
+.num{font-variant-numeric:tabular-nums}
+
+/* Schermen */
+.screen{position:fixed;inset:0;padding:var(--top) var(--gutter) var(--tab-space);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+.title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:41px}
+h1{font:700 34px/41px var(--sans);letter-spacing:.01em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subtitle{font-size:15px;line-height:20px;color:var(--label-2);margin:2px 0 0}
+
+/* Lijsten */
+.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font:600 15px/20px var(--sans);color:var(--label-2);margin:26px 16px 7px}
+.section-head .side{font-weight:400;text-align:right}
+.list{background:var(--card);border-radius:var(--r-card);overflow:hidden}
+.row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:50px;padding:11px 16px;text-align:left}
+.row+.row::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+.row .value{color:var(--label-2);text-align:right;white-space:nowrap}
+.row .unit{font-size:15px}
+button.row:active,.day-main:active{background:var(--press)}
+.chevron{flex:none;width:8px;height:14px;margin-left:8px;color:var(--label-3)}
+.value-wrap{display:flex;align-items:center;min-width:0}
+.note{font-size:13px;line-height:18px;color:var(--label-2);margin:7px 16px 0}
+
+/* Tab 1: past altijd op één scherm; de batterij vangt het hoogteverschil op. */
+#home{display:flex;flex-direction:column;overflow:hidden}
+.status{display:flex;align-items:center;gap:5px;font-size:15px;line-height:20px;color:var(--label-2);margin-top:2px;min-height:20px}
+.status svg{width:11px;height:14px;fill:currentColor;flex:none}
+.status.charging{color:var(--tint);font-weight:600}
+.status.bad{color:var(--bad);font-weight:600}
+
+.battery-wrap{flex:1 1 150px;display:flex;flex-direction:column;justify-content:center;min-height:0;margin:14px 0 0;max-height:300px}
+.battery{--soc:0%;position:relative;display:flex;align-items:center;flex:1 1 auto;min-height:70px;max-height:204px}
+.bat-body{position:relative;flex:1;height:100%;border-radius:34px;background:var(--track);overflow:hidden}
+.bat-nub{flex:none;width:6px;height:34%;margin-left:3px;border-radius:0 5px 5px 0;background:var(--track)}
+.bat-fill{position:absolute;inset:0 auto 0 0;width:var(--soc);background:var(--battery);overflow:hidden;transition:width .6s cubic-bezier(.3,.8,.3,1)}
+.battery.low .bat-fill{background:var(--bad)}
+.battery.charging .bat-fill::after{content:"";position:absolute;inset:0;width:45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.24),transparent);animation:sweep 3.2s ease-in-out infinite}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(320%)}}
+.bat-num{position:absolute;inset:0;display:flex;align-items:center;padding-left:22px;font:700 clamp(58px,11.8vh,104px)/1 var(--rounded);letter-spacing:-.02em;color:var(--label);font-variant-numeric:tabular-nums}
+.bat-num small{font-size:.5em;font-weight:600;margin-left:.06em;letter-spacing:0}
+.bat-num.over{color:#fff;clip-path:inset(0 calc(100% - var(--soc)) 0 0);transition:clip-path .6s cubic-bezier(.3,.8,.3,1)}
+.bat-target{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--label);opacity:.55}
+.target-label{position:relative;height:18px;margin:5px 9px 0 0;font-size:13px;line-height:18px;color:var(--label-2)}
+.target-label span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+
+.home-lower{flex:none;margin-top:auto;padding-top:14px}
+.home-lower .section-head{margin-top:18px}
+.segmented{--i:0;--n:3;position:relative;display:grid;grid-template-columns:repeat(3,1fr);height:44px;padding:3px;border-radius:22px;background:var(--track)}
+.seg-thumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/var(--n));border-radius:19px;background:var(--thumb);box-shadow:0 2px 8px rgba(0,0,0,.14);transform:translateX(calc(var(--i)*100%));transition:transform .32s cubic-bezier(.3,1.25,.5,1)}
+.segmented.none .seg-thumb{opacity:0}
+.mode{position:relative;font-size:15px;font-weight:500;border-radius:19px;min-width:0}
+.mode.active{font-weight:600}
+.mode-note{min-height:18px}
+
+/* Tabbalk */
+.tabbar{position:fixed;z-index:20;left:max(21px,calc((100vw - 420px)/2));right:max(21px,calc((100vw - 420px)/2));bottom:var(--tab-bottom);height:var(--tab-h);display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:31px;background:var(--glass);border:.5px solid var(--glass-line);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:27px;font-size:10.5px;line-height:13px;font-weight:500;color:var(--label)}
+.tab svg{width:26px;height:26px;fill:currentColor}
+.tab[aria-selected=true]{color:var(--tint);background:var(--press);font-weight:600}
+
+/* Planning */
+.save{flex:none;height:36px;padding:0 16px;border-radius:18px;font-size:15px;font-weight:600;background:var(--tint);color:var(--on-tint);transition:background .2s,color .2s}
+.save:disabled{background:var(--track);color:var(--label-3)}
+.day{position:relative;display:flex;align-items:stretch}
+.day+.day::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+.day-main{flex:1;min-width:0;display:grid;grid-template-columns:1fr 58px 52px;align-items:center;gap:4px;min-height:52px;padding:0 4px 0 16px;text-align:left}
+.day-values{display:contents;color:var(--label-2)}
+.day-time{text-align:right;font-weight:600;color:var(--label)}
+.day-soc{text-align:right;color:var(--label-2)}
+.day.off .day-name{color:var(--label-2)}
+.day-switch{display:flex;align-items:center;padding:0 16px 0 10px}
+input[type=checkbox]{margin:0;accent-color:#34a853;width:51px;height:31px}
+.no-native-switch input[type=checkbox]{appearance:none;-webkit-appearance:none;position:relative;border-radius:16px;background:var(--track);cursor:pointer;transition:background .2s}
+.no-native-switch input[type=checkbox]::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s}
+.no-native-switch input[type=checkbox]:checked{background:#34a853}
+.no-native-switch input[type=checkbox]:checked::after{transform:translateX(20px)}
+
+/* Energie */
+.meter{display:grid;grid-template-columns:24px 1fr 62px;align-items:center;gap:10px;min-height:44px;padding:0 16px;position:relative}
+.meter+.meter::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+.meter .ph{font-size:15px;color:var(--label-2)}
+.meter .val{text-align:right}
+.bar{height:6px;border-radius:3px;background:var(--track);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--tint);transition:width .4s}
+.charger .bar i{background:var(--blue)}
+.bar.high i{background:var(--warn)}
+.status-ok{color:var(--label-2)}.status-warn{color:var(--warn)}
+.chart-wrap{padding:14px 16px 12px;position:relative}
+.chart-wrap::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+.chart-top{display:flex;justify-content:space-between;font-size:12px;line-height:16px;color:var(--label-2);margin-bottom:5px}
+.chart{position:relative;height:96px;border-bottom:.5px solid var(--label-3)}
+.slot{position:absolute;bottom:0;background:var(--tint);border-radius:2px 2px 0 0;box-shadow:inset -1px 0 0 var(--card);min-width:2px}
+.dep{position:absolute;top:0;bottom:0;width:0;border-left:1.5px dashed var(--label-2)}
+.axis{display:flex;justify-content:space-between;font-size:12px;line-height:16px;color:var(--label-2);margin-top:5px}
+.empty{padding:15px 16px;color:var(--label-2);position:relative}
+.empty::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+
+/* Sheet en alert */
+.scrim{position:fixed;inset:0;z-index:30;background:var(--scrim);opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
+.scrim.open{opacity:1;visibility:visible}
+.sheet{position:fixed;z-index:31;left:max(8px,calc((100vw - 500px)/2));right:max(8px,calc((100vw - 500px)/2));bottom:max(8px,calc(env(safe-area-inset-bottom) - 20px));border-radius:36px;background:var(--raised);box-shadow:var(--shadow);padding:10px 12px 18px;transform:translateY(calc(100% + 40px));visibility:hidden;transition:transform .38s cubic-bezier(.25,1,.35,1),visibility .38s}
+.sheet.open{transform:none;visibility:visible}
+.sheet-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:46px}
+.sheet-head h2{font:600 17px/22px var(--sans);margin:0}
+.sheet-btn{justify-self:start;height:44px;padding:0 10px;color:var(--label-2)}
+.sheet-btn.done{justify-self:end;color:var(--tint);font-weight:600}
+.wheel-labels{display:grid;grid-template-columns:2fr 1fr;text-align:center;font-size:13px;line-height:18px;color:var(--label-2);margin-top:8px}
+.wheels{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;height:180px;margin-top:4px}
+.wheels::before{content:"";position:absolute;left:0;right:0;top:72px;height:36px;border-radius:12px;background:var(--track)}
+.wheel{position:relative;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;padding:72px 0;text-align:center;-webkit-mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent);mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent)}
+.wheel::-webkit-scrollbar{display:none}
+.wheel div{height:36px;line-height:36px;font-size:22px;scroll-snap-align:center;font-variant-numeric:tabular-nums}
+
+.alert{position:fixed;z-index:33;left:50%;top:50%;width:min(306px,calc(100vw - 48px));transform:translate(-50%,-46%) scale(.96);opacity:0;visibility:hidden;border-radius:30px;background:var(--raised);box-shadow:var(--shadow);padding:22px 18px 14px;text-align:center;transition:opacity .2s,transform .2s,visibility .2s}
+.alert.open{opacity:1;visibility:visible;transform:translate(-50%,-50%)}
+.alert h2{font:600 17px/22px var(--sans);margin:0 0 6px}
+.alert p{font-size:15px;line-height:20px;margin:0 0 18px;color:var(--label-2)}
+.alert-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.alert-actions button{height:46px;border-radius:23px;background:var(--track);font-weight:500}
+.alert-actions .primary{background:var(--tint);color:var(--on-tint);font-weight:600}
+.scrim.over-sheet{z-index:32}
+
+.toast{position:fixed;z-index:40;left:50%;top:calc(var(--top) + 2px);max-width:calc(100vw - 32px);transform:translate(-50%,calc(-100% - var(--top) - 40px));visibility:hidden;padding:11px 18px;border-radius:24px;background:var(--glass);border:.5px solid var(--glass-line);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);font-size:15px;line-height:20px;font-weight:500;text-align:center;transition:transform .36s cubic-bezier(.25,1,.35,1),visibility .36s}
+.toast.show{transform:translate(-50%,0);visibility:visible}
+.toast.error{color:var(--bad)}
+
+@media (max-height:640px){
+  h1{font-size:28px;line-height:34px}.title-row{min-height:34px}
+  .row{min-height:44px;padding-block:8px}
+  .home-lower .section-head{margin-top:10px}
+  .home-lower{padding-top:8px}
+  .battery-wrap{margin-top:8px}.mode-note{display:none}
+}
+html:not(.ready) *{transition:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<main id="home" class="screen" role="tabpanel" aria-labelledby="tab-home">
+  <div class="title-row"><h1 id="vehicleTitle">Je auto</h1></div>
+  <div class="status" id="status" role="status"><span id="statusText">Verbinden met evcc</span></div>
+
+  <div class="battery-wrap">
+    <div class="battery" id="battery" role="img" aria-label="Accu onbekend">
+      <div class="bat-body">
+        <div class="bat-num" aria-hidden="true"><span><span class="socValue">—</span><small>%</small></span></div>
+        <div class="bat-fill"></div>
+        <div class="bat-num over" aria-hidden="true"><span><span class="socValue">—</span><small>%</small></span></div>
+        <div class="bat-target" id="targetLine" hidden></div>
+      </div>
+      <div class="bat-nub"></div>
+    </div>
+    <div class="target-label"><span id="targetLabel" hidden></span></div>
+  </div>
+
+  <div class="home-lower">
+    <div class="list">
+      <div class="row"><span>Laadvermogen</span><span class="value num" id="power">—</span></div>
+      <div class="row"><span>Stroomprijs</span><span class="value num" id="price">—</span></div>
+      <button class="row" id="nextRow"><span>Volgend vertrek</span><span class="value-wrap"><span class="value num" id="next">Geen planning</span><svg class="chevron" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg></span></button>
+    </div>
+    <div class="section-head"><span id="modeLabel">Laadmodus</span></div>
+    <div class="segmented none" id="segmented" role="radiogroup" aria-labelledby="modeLabel">
+      <div class="seg-thumb"></div>
+      <button class="mode" data-mode="off" role="radio" aria-checked="false">Uit</button>
+      <button class="mode" data-mode="smart" role="radio" aria-checked="false">Slim</button>
+      <button class="mode" data-mode="now" role="radio" aria-checked="false">Nu</button>
+    </div>
+    <p class="note mode-note" id="modeNote"></p>
+  </div>
+</main>
+
+<main id="planning" class="screen" role="tabpanel" aria-labelledby="tab-planning" hidden>
+  <div class="title-row"><h1>Planning</h1><button class="save" id="save" disabled>Bewaar</button></div>
+  <p class="subtitle">Elke week hetzelfde. Kies de dagen waarop je de auto nodig hebt.</p>
+  <div class="section-head" style="margin-top:20px"><span>Weekschema</span></div>
+  <div class="list" id="days"></div>
+  <p class="note">Bewaren vervangt de herhalende plannen van deze auto in evcc. Eenmalige plannen blijven staan.</p>
+</main>
+
+<main id="energy" class="screen" role="tabpanel" aria-labelledby="tab-energy" hidden>
+  <div class="title-row"><h1>Energie</h1></div>
+
+  <div class="section-head" style="margin-top:16px"><span>Verbruik nu</span></div>
+  <div class="list">
+    <div class="row"><span>Huis, met laadpaal</span><span class="value num" id="housePower">—</span></div>
+    <div class="row"><span>Laadpaal</span><span class="value num" id="chargerPower">—</span></div>
+  </div>
+  <p class="note" id="energyNote" hidden></p>
+
+  <div class="section-head"><span>Netaansluiting</span><span class="side" id="balanceStatus">Controleren</span></div>
+  <div class="list">
+    <div class="meter"><span class="ph">L1</span><div class="bar" id="gridTrack1"><i id="gridBar1"></i></div><span class="val num" id="grid1">—</span></div>
+    <div class="meter"><span class="ph">L2</span><div class="bar" id="gridTrack2"><i id="gridBar2"></i></div><span class="val num" id="grid2">—</span></div>
+    <div class="meter"><span class="ph">L3</span><div class="bar" id="gridTrack3"><i id="gridBar3"></i></div><span class="val num" id="grid3">—</span></div>
+    <div class="row"><span>Ruimte op drukste fase</span><span class="value num" id="headroom">—</span></div>
+  </div>
+  <p class="note" id="gridNote"></p>
+
+  <div class="section-head"><span>Laadpaal per fase</span></div>
+  <div class="list charger">
+    <div class="meter"><span class="ph">L1</span><div class="bar"><i id="chargeBar1"></i></div><span class="val num" id="phase1">—</span></div>
+    <div class="meter"><span class="ph">L2</span><div class="bar"><i id="chargeBar2"></i></div><span class="val num" id="phase2">—</span></div>
+    <div class="meter"><span class="ph">L3</span><div class="bar"><i id="chargeBar3"></i></div><span class="val num" id="phase3">—</span></div>
+    <div class="row"><span>Maximale laadstroom</span><span class="value num" id="maxCurrent">—</span></div>
+    <div class="row"><span>Huidige limiet</span><span class="value num" id="effectiveCurrent">—</span></div>
+  </div>
+
+  <div class="section-head"><span>Laadprognose</span><span class="side" id="forecastStatus">Controleren</span></div>
+  <div class="list" id="forecast">
+    <div class="row"><span>Klaar op</span><span class="value num" id="forecastTime">—</span></div>
+    <div class="row"><span>Doel</span><span class="value num" id="forecastSoc">—</span></div>
+    <div id="forecastChart"></div>
+  </div>
+  <p class="note" id="forecastNote"></p>
+</main>
+
+<nav class="tabbar" role="tablist" aria-label="Schermen">
+  <button class="tab" id="tab-home" role="tab" data-tab="home" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 2.2c.3-.5 1-.2.9.3L13.2 10h5.2c.5 0 .8.6.5 1l-8.5 10.8c-.4.5-1.1.1-1-.4l1.4-7.9H5.6c-.5 0-.8-.6-.5-1z"/></svg>Laden</button>
+  <button class="tab" id="tab-planning" role="tab" data-tab="planning" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7 2.5a1 1 0 0 1 1 1V5h8V3.5a1 1 0 1 1 2 0V5h.5A3.5 3.5 0 0 1 22 8.5v10a3.5 3.5 0 0 1-3.5 3.5h-13A3.5 3.5 0 0 1 2 18.5v-10A3.5 3.5 0 0 1 5.5 5H6V3.5a1 1 0 0 1 1-1ZM4 10.5v8A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-8H4Zm3.5 2.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm4.5 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm4.5 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z"/></svg>Planning</button>
+  <button class="tab" id="tab-energy" role="tab" data-tab="energy" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="12" width="4.5" height="9" rx="1.6"/><rect x="9.75" y="7" width="4.5" height="14" rx="1.6"/><rect x="16" y="3" width="4.5" height="18" rx="1.6"/></svg>Energie</button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-head">
+    <button class="sheet-btn" id="sheetCancel">Annuleer</button>
+    <h2 id="sheetTitle"></h2>
+    <button class="sheet-btn done" id="sheetDone">Gereed</button>
+  </div>
+  <div class="wheel-labels"><span>Klaar om</span><span>Laden tot</span></div>
+  <div class="wheels" id="wheels"></div>
+</section>
+
+<div class="scrim over-sheet" id="alertScrim"></div>
+<section class="alert" id="alert" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" aria-describedby="alertText">
+  <h2 id="alertTitle"></h2>
+  <p id="alertText"></p>
+  <div class="alert-actions"><button id="alertCancel">Annuleer</button><button class="primary" id="alertOk"></button></div>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const WEEKDAYS = ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
+const MODE_NOTES = {
+  off: 'Er wordt niet geladen.',
+  smart: 'evcc bepaalt wanneer er geladen wordt.',
+  now: 'De auto laadt direct, op vol vermogen.'
+};
+const BOLT = '<svg viewBox="0 0 11 14" aria-hidden="true"><path d="M6.7.3c.2-.3.6-.1.6.2L6.5 5.6h3.3c.3 0 .5.4.3.6L4.3 13.7c-.2.3-.7.1-.6-.3l.8-5H1.2c-.3 0-.5-.4-.3-.6z"/></svg>';
+
+let state = null, vehicle = null, loadpoint = null, timezone = 'Europe/Amsterdam';
+let dirty = false, initialized = false, pendingMode = null, lastUpdate = null;
+let days = WEEKDAYS.map(() => ({on:false, time:'07:30', soc:80}));
+
+if (!('switch' in HTMLInputElement.prototype)) document.documentElement.classList.add('no-native-switch');
+
+/* Opmaak: altijd Nederlands, ongeacht de taal van het toestel */
+const number = (v, min = 0, max = min) => v.toLocaleString('nl-NL', {minimumFractionDigits:min, maximumFractionDigits:max});
+const isNum = v => typeof v === 'number' && Number.isFinite(v);
+const fmtPower = v => !isNum(v) ? '—' : Math.abs(v) >= 1000 ? number(v/1000, 1) + ' kW' : number(Math.round(v)) + ' W';
+const fmtCurrent = v => isNum(v) ? number(v, 1) + ' A' : '—';
+const fmtPrice = v => '€ ' + number(v, 2, 3);
+const dateFormat = options => new Intl.DateTimeFormat('nl-NL', {timeZone:timezone, hourCycle:'h23', ...options});
+const fmtDayTime = t => { const parts = dateFormat({weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}).formatToParts(new Date(t)); const get = type => parts.find(p => p.type === type)?.value; return `${get('weekday')} ${get('day')} ${get('month')}, ${get('hour')}:${get('minute')}`; };
+const fmtShort = t => { const parts = dateFormat({weekday:'short', hour:'2-digit', minute:'2-digit'}).formatToParts(new Date(t)); const get = type => parts.find(p => p.type === type)?.value; return `${get('weekday')} ${get('hour')}:${get('minute')}`; };
+const fmtClock = t => dateFormat({hour:'2-digit', minute:'2-digit'}).format(new Date(t));
+const fmtDuration = mins => { const h = Math.floor(mins/60), m = Math.round(mins%60); return (h ? h + ' u' : '') + (h && m ? ' ' : '') + (m || !h ? m + ' min' : ''); };
+
+/* Meldingen */
+let toastTimer;
+function toast(text, error = false){
+  const el = $('toast');
+  el.textContent = text;
+  el.classList.toggle('error', error);
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), error ? 5000 : 2400);
+}
+$('toast').onclick = () => $('toast').classList.remove('show');
+
+function ask({title, text, ok}){
+  $('alertTitle').textContent = title;
+  $('alertText').textContent = text;
+  $('alertOk').textContent = ok;
+  $('alert').classList.add('open');
+  $('alertScrim').classList.add('open');
+  $('alertOk').focus({preventScroll:true});
+  return new Promise(resolve => {
+    const done = answer => {
+      $('alert').classList.remove('open');
+      $('alertScrim').classList.remove('open');
+      resolve(answer);
+    };
+    $('alertOk').onclick = () => done(true);
+    $('alertCancel').onclick = () => done(false);
+  });
+}
+
+/* evcc */
+async function api(path, opts = {}){
+  const r = await fetch('proxy/' + path, {...opts, headers:{'Content-Type':'application/json', ...(opts.headers || {})}});
+  let data;
+  try { data = await r.json(); } catch { data = {}; }
+  if (!r.ok) throw new Error(typeof data.error === 'string' ? data.error : 'evcc gaf foutcode ' + r.status);
+  return data;
+}
+
+function pickVehicle(s){
+  const lps = s.loadpoints || [];
+  loadpoint = lps.find(x => x.vehicleName) || lps[0] || null;
+  let key = loadpoint?.vehicleName;
+  const vs = s.vehicles || {};
+  if (!key && loadpoint?.vehicleTitle) key = Object.keys(vs).find(k => vs[k]?.title === loadpoint.vehicleTitle);
+  if (!key) key = Object.keys(vs)[0];
+  vehicle = key || null;
+  return key ? vs[key] : null;
+}
+
+function readPlans(v){
+  if (dirty) return;
+  days = WEEKDAYS.map(() => ({on:false, time:'07:30', soc:80}));
+  for (const p of v?.repeatingPlans || []) for (const d of p.weekdays || []) {
+    const idx = (d + 6) % 7;
+    if (idx >= 0 && idx < 7 && p.active) days[idx] = {on:true, time:p.time || '07:30', soc:p.soc || 80};
+  }
+  initialized = true;
+  days.forEach((_, i) => updateDay(i));
+  renderNext();
+}
+
+function nextDeparture(){
+  const now = new Date(), today = now.getDay(), minute = now.getHours()*60 + now.getMinutes();
+  const list = days.flatMap((d, i) => {
+    if (!d.on) return [];
+    let offset = ((i + 1) % 7 - today + 7) % 7;
+    let delta = offset*1440 + Number(d.time.slice(0,2))*60 + Number(d.time.slice(3)) - minute;
+    if (delta < 0) { delta += 10080; offset = 7; }
+    return [{...d, i, offset, delta}];
+  });
+  return list.sort((a, b) => a.delta - b.delta)[0] || null;
+}
+
+function renderNext(){
+  const d = nextDeparture();
+  const line = $('targetLine'), label = $('targetLabel');
+  line.hidden = label.hidden = !d;
+  if (!d) { $('next').textContent = 'Geen planning'; return; }
+  const day = d.offset === 0 ? 'Vandaag' : d.offset === 1 ? 'Morgen' : WEEKDAYS[d.i];
+  $('next').textContent = day + ' ' + d.time;
+  line.style.left = d.soc + '%';
+  label.textContent = 'Doel ' + d.soc + '%';
+  label.style.left = Math.max(9, Math.min(90, d.soc)) + '%';
+}
+
+function renderHome(s, v){
+  $('vehicleTitle').textContent = v?.title || loadpoint?.vehicleTitle || 'Je auto';
+
+  const raw = loadpoint?.vehicleSoc ?? v?.soc ?? v?.vehicleSoc;
+  const soc = raw !== null && raw !== undefined && Number.isFinite(Number(raw)) ? Math.max(0, Math.min(100, Number(raw))) : null;
+  const charging = !!loadpoint?.charging;
+  const battery = $('battery');
+  document.querySelectorAll('.socValue').forEach(el => el.textContent = soc === null ? '—' : Math.round(soc));
+  battery.style.setProperty('--soc', (soc ?? 0) + '%');
+  battery.classList.toggle('charging', charging);
+  battery.classList.toggle('low', soc !== null && soc <= 15);
+  battery.setAttribute('aria-label', soc === null ? 'Accu onbekend' : 'Accu ' + Math.round(soc) + ' procent');
+
+  const status = $('status');
+  status.className = 'status' + (charging ? ' charging' : '');
+  status.innerHTML = charging ? BOLT : '';
+  const text = document.createElement('span');
+  text.textContent = charging ? 'Aan het laden' : loadpoint?.connected ? 'Aangesloten, laadt niet' : 'Niet aangesloten';
+  status.append(text);
+
+  $('power').textContent = isNum(loadpoint?.chargePower) ? (loadpoint.chargePower >= 100 ? number(loadpoint.chargePower/1000, 1) + ' kW' : '0 kW') : '—';
+  const price = s.tariffGrid ?? s.gridPrice;
+  $('price').innerHTML = '';
+  if (isNum(price)) {
+    const unit = document.createElement('span');
+    unit.className = 'unit';
+    unit.textContent = ' per kWh';
+    $('price').append(fmtPrice(price), unit);
+  } else $('price').textContent = '—';
+
+  renderMode(pendingMode ?? loadpoint?.mode);
+  $('save').disabled = !(vehicle && dirty);
+}
+
+function renderMode(mode){
+  const buttons = [...document.querySelectorAll('[data-mode]')];
+  const index = buttons.findIndex(b => b.dataset.mode === mode);
+  buttons.forEach((b, i) => { b.classList.toggle('active', i === index); b.setAttribute('aria-checked', i === index); });
+  const seg = $('segmented');
+  seg.style.setProperty('--i', Math.max(0, index));
+  seg.classList.toggle('none', index < 0);
+  $('modeNote').textContent = MODE_NOTES[mode] || '';
+}
+
+function currents(lp){
+  const c = lp?.chargeCurrents ?? lp?.chargerCurrents ?? lp?.phaseCurrents;
+  if (Array.isArray(c)) return c;
+  if (c && typeof c === 'object') return [c.l1 ?? c.L1, c.l2 ?? c.L2, c.l3 ?? c.L3];
+  return [lp?.chargeCurrentL1, lp?.chargeCurrentL2, lp?.chargeCurrentL3];
+}
+
+function renderEnergy(s){
+  const powers = (s.loadpoints || []).map(lp => lp.chargePower);
+  const totalCharger = powers.every(isNum) ? powers.reduce((a, b) => a + b, 0) : null;
+  const totalHouse = isNum(s.homePower) && totalCharger !== null ? s.homePower + totalCharger : null;
+  $('housePower').textContent = fmtPower(totalHouse);
+  $('chargerPower').textContent = fmtPower(totalCharger);
+  $('energyNote').hidden = totalHouse !== null;
+  $('energyNote').textContent = 'Totaal onbekend: evcc meldt niet voor elke laadpaal het vermogen.';
+
+  const circuit = Object.values(s.circuits || {}).find(c => c.title === 'Loadbalancerp1') || Object.values(s.circuits || {})[0];
+  const limit = isNum(circuit?.maxCurrent) ? circuit.maxCurrent : 23;
+  const grid = s.grid?.currents;
+  for (let i = 0; i < 3; i++) {
+    const a = Array.isArray(grid) ? grid[i] : null;
+    const share = isNum(a) && limit > 0 ? Math.min(100, Math.abs(a)/limit*100) : 0;
+    $('grid' + (i+1)).textContent = fmtCurrent(a);
+    $('gridBar' + (i+1)).style.width = share + '%';
+    $('gridTrack' + (i+1)).classList.toggle('high', share >= 90);
+  }
+  const known = Array.isArray(grid) && grid.length >= 3 && grid.slice(0,3).every(Number.isFinite);
+  $('headroom').textContent = known ? fmtCurrent(limit - Math.max(...grid.slice(0,3).map(Math.abs))) : '—';
+  $('gridNote').textContent = `HomeWizard P1, limiet ${number(limit)} A per fase. Netto gemeten, dus teruglevering van zonnestroom verlaagt de waarde.`;
+
+  const c = currents(loadpoint);
+  const configured = loadpoint?.maxCurrent, effective = loadpoint?.effectiveMaxCurrent;
+  const scale = isNum(configured) && configured > 0 ? configured : 16;
+  for (let i = 0; i < 3; i++) {
+    $('phase' + (i+1)).textContent = fmtCurrent(c[i]);
+    $('chargeBar' + (i+1)).style.width = isNum(c[i]) ? Math.min(100, Math.abs(c[i])/scale*100) + '%' : '0%';
+  }
+  $('maxCurrent').textContent = isNum(configured) ? number(configured) + ' A' : '—';
+  $('effectiveCurrent').textContent = isNum(effective) ? number(effective) + ' A' : '—';
+
+  const status = $('balanceStatus');
+  let label = 'Onbekend', warn = false;
+  if (loadpoint && !loadpoint.charging) label = 'Laadt niet';
+  else if (isNum(effective) && isNum(configured)) {
+    warn = effective < configured - 0.1;
+    label = warn ? 'Begrensd, oorzaak onbekend' : 'Geen begrenzing';
+  }
+  status.textContent = label;
+  status.className = 'side ' + (warn ? 'status-warn' : 'status-ok');
+}
+
+function mergeSlots(slots){
+  const blocks = [];
+  for (const p of slots) {
+    const start = Date.parse(p.start), end = Date.parse(p.end), mins = (end - start)/60000;
+    const last = blocks[blocks.length - 1];
+    if (last && last.end === start) {
+      last.end = end;
+      if (isNum(p.value)) { last.cost += p.value*mins; last.priced += mins; last.mixed ||= last.first !== p.value; }
+    } else blocks.push({start, end, first:p.value, cost:isNum(p.value) ? p.value*mins : 0, priced:isNum(p.value) ? mins : 0, mixed:false});
+  }
+  return blocks;
+}
+
 function renderForecast(lp){
-const slots=Array.isArray(lp?.plan)?lp.plan.filter(p=>p&&Number.isFinite(Date.parse(p.start))&&Number.isFinite(Date.parse(p.end))&&Date.parse(p.end)>Date.parse(p.start)).sort((a,b)=>Date.parse(a.start)-Date.parse(b.start)):[];
-const chart=$('forecastChart');chart.replaceChildren();
-$('forecastStatus').textContent=lp?.planActive?'Active plan':'Forecast only';
-const departure=lp?.effectivePlanTime||lp?.planTime;
-$('forecastTarget').textContent=(departure?'Ready '+new Date(departure).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'No departure available')+(Number.isFinite(lp?.effectivePlanSoc)?' · target '+lp.effectivePlanSoc+'%':'');
-if(!slots.length){chart.textContent='No planned charging intervals available.';$('forecastNote').textContent='evcc has not supplied a charging timeline.';return}
-const first=Date.parse(slots[0].start),last=Math.max(Date.parse(slots[slots.length-1].end),Date.parse(departure)||0);
-const min=Math.floor(first/3600000)*3600000,max=Math.ceil((last+3600000)/3600000)*3600000,span=max-min;
-const track=document.createElement('div');track.className='forecast-track';track.setAttribute('role','img');track.setAttribute('aria-label','Planned charging intervals');
-for(const p of slots){const bar=document.createElement('div');bar.className='forecast-slot';bar.style.left=((Date.parse(p.start)-min)/span*100)+'%';bar.style.width=((Date.parse(p.end)-Date.parse(p.start))/span*100)+'%';bar.title=new Date(p.start).toLocaleString()+' – '+new Date(p.end).toLocaleTimeString();track.append(bar)}
-const dep=Date.parse(departure);if(Number.isFinite(dep)&&dep>=min&&dep<=max){const line=document.createElement('div');line.className='forecast-marker';line.style.left=((dep-min)/span*100)+'%';line.title='Departure';track.append(line)}
-chart.append(track);const axis=document.createElement('div');axis.className='forecast-axis';for(const t of [min,(min+max)/2,max]){const el=document.createElement('span');el.textContent=new Date(t).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'});axis.append(el)}chart.append(axis);
-const summary=document.createElement('div');summary.className='sub';summary.style.marginTop='13px';const mins=Math.round(slots.reduce((n,p)=>n+(Date.parse(p.end)-Date.parse(p.start))/60000,0));summary.textContent=slots.length+' intervals · '+mins+' min planned · dashed line = departure';chart.append(summary);
-for(const p of slots){const row=document.createElement('div');row.className='forecast-row';const times=document.createElement('span');times.textContent=new Date(p.start).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'})+' – '+new Date(p.end).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});const price=document.createElement('span');price.textContent=Number.isFinite(p.value)?'€'+p.value.toFixed(3)+'/kWh':'';row.append(times,price);chart.append(row)}
-$('forecastNote').textContent=lp?.planActive?'evcc reports an active plan; charging times may change.':'evcc reports planActive=false. These are calculated slots, not an active charging commitment.';
+  const slots = (Array.isArray(lp?.plan) ? lp.plan : [])
+    .filter(p => p && Number.isFinite(Date.parse(p.start)) && Number.isFinite(Date.parse(p.end)) && Date.parse(p.end) > Date.parse(p.start))
+    .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+  const box = $('forecastChart');
+  box.replaceChildren();
+  $('forecastStatus').textContent = lp?.planActive ? 'Plan actief' : 'Alleen prognose';
+  const departure = lp?.effectivePlanTime || lp?.planTime;
+  $('forecastTime').textContent = departure ? fmtDayTime(departure) : 'Geen vertrek bekend';
+  $('forecastSoc').textContent = isNum(lp?.effectivePlanSoc) ? lp.effectivePlanSoc + '%' : '—';
+
+  if (!slots.length) {
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'evcc heeft nog geen laadmomenten berekend.';
+    box.append(empty);
+    $('forecastNote').textContent = '';
+    return;
+  }
+
+  const hour = 3600000;
+  const first = Date.parse(slots[0].start);
+  const last = Math.max(Date.parse(slots[slots.length-1].end), Date.parse(departure) || 0);
+  const min = Math.floor(first/hour)*hour, max = Math.ceil((last + hour/2)/hour)*hour, span = max - min;
+  const prices = slots.map(p => p.value).filter(isNum);
+  const top = prices.length ? Math.max(...prices) : 0;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'chart-wrap';
+  const head = document.createElement('div');
+  head.className = 'chart-top';
+  const mins = slots.reduce((n, p) => n + (Date.parse(p.end) - Date.parse(p.start))/60000, 0);
+  const left = document.createElement('span'); left.textContent = fmtDuration(mins) + ' laden gepland';
+  const right = document.createElement('span'); right.className = 'num'; right.textContent = prices.length ? 'tot ' + fmtPrice(top) + ' per kWh' : '';
+  head.append(left, right);
+
+  const chart = document.createElement('div');
+  chart.className = 'chart';
+  chart.setAttribute('role', 'img');
+  chart.setAttribute('aria-label', 'Geplande laadmomenten met stroomprijs, staan hieronder ook als lijst');
+  for (const p of slots) {
+    const bar = document.createElement('div');
+    bar.className = 'slot';
+    bar.style.left = (Date.parse(p.start) - min)/span*100 + '%';
+    bar.style.width = (Date.parse(p.end) - Date.parse(p.start))/span*100 + '%';
+    bar.style.height = isNum(p.value) && top > 0 ? Math.max(8, p.value/top*100) + '%' : '100%';
+    chart.append(bar);
+  }
+  const dep = Date.parse(departure);
+  if (Number.isFinite(dep) && dep >= min && dep <= max) {
+    const line = document.createElement('div');
+    line.className = 'dep';
+    line.style.left = (dep - min)/span*100 + '%';
+    chart.append(line);
+  }
+  const axis = document.createElement('div');
+  axis.className = 'axis num';
+  for (const t of [min, max]) { const el = document.createElement('span'); el.textContent = fmtShort(t); axis.append(el); }
+  wrap.append(head, chart, axis);
+  box.append(wrap);
+
+  for (const block of mergeSlots(slots)) {
+    const row = document.createElement('div');
+    row.className = 'row';
+    const when = document.createElement('span');
+    when.className = 'num';
+    when.textContent = fmtShort(block.start) + ' tot ' + fmtClock(block.end);
+    const cost = document.createElement('span');
+    cost.className = 'value num';
+    cost.textContent = block.priced ? (block.mixed ? 'gem. ' : '') + fmtPrice(block.cost/block.priced) : '';
+    row.append(when, cost);
+    box.append(row);
+  }
+  $('forecastNote').textContent = (lp?.planActive ? 'Plan is actief; de tijden kunnen nog verschuiven.' : 'Berekende momenten: er is nog geen plan actief.') + ' De stippellijn is je vertrektijd.';
 }
-async function refresh(){try{const raw=await api('state');const s=raw.result||raw;state=s;const v=pickVehicle(s);renderEnergy(s);renderForecast(loadpoint);$('status').textContent='Connected';$('status').className='pill';$('connection').textContent=loadpoint?.connected?'Car connected':'Live status';$('vehicleTitle').textContent=v?.title||loadpoint?.vehicleTitle||'Your electric vehicle';const soc=loadpoint?.vehicleSoc??v?.soc??v?.vehicleSoc;$('soc').textContent=Number.isFinite(Number(soc))?Math.round(Number(soc)):'—';$('socBar').style.width=Number.isFinite(Number(soc))?Math.max(0,Math.min(100,Number(soc)))+'%':'0%';const power=loadpoint?.chargePower;$('power').textContent=typeof power==='number'?(power/1000).toFixed(1)+' kW':'—';const price=s.tariffGrid??s.gridPrice;$('price').textContent=typeof price==='number'?'€ '+price.toFixed(3)+'/kWh':'—';const mode=loadpoint?.mode;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('save').disabled=!vehicle;if(!dirty)readPlans(v);}
-catch(e){$('status').textContent='Offline';$('status').className='pill bad';if(!initialized)notice('Could not connect to evcc. Check the app configuration and evcc network access. '+e.message,'error')}}
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(t=>t.classList.toggle('active',t===b));$('home').classList.toggle('hidden',b.dataset.tab!=='home');$('planning').classList.toggle('hidden',b.dataset.tab!=='planning');$('energy').classList.toggle('hidden',b.dataset.tab!=='energy');clearNotice()});
-document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=async()=>{if(!loadpoint){notice('No charging point found','error');return}if(!confirm('Set charging mode to '+b.dataset.mode+'?'))return;const idx=(state?.loadpoints||[]).indexOf(loadpoint)+1;b.disabled=true;try{await api('loadpoints/'+idx+'/mode/'+b.dataset.mode,{method:'POST'});await refresh();notice('Charging mode updated','ok')}catch(e){notice(e.message,'error')}finally{b.disabled=false}});
-$('save').onclick=async()=>{if(!vehicle){notice('No vehicle found in evcc','error');return}const plans=days.flatMap((d,i)=>d.on?[{weekdays:[(i+1)%7],time:d.time,tz:timezone,soc:d.soc,active:true}]:[]);if(!confirm('Replace all existing repeating plans for '+vehicle+' with this weekly schedule?'))return;$('save').disabled=true;try{await api('vehicles/'+encodeURIComponent(vehicle)+'/plan/repeating',{method:'POST',body:JSON.stringify(plans)});dirty=false;notice('Weekly schedule saved to evcc','ok');await refresh()}catch(e){notice('Save failed: '+e.message,'error')}finally{$('save').disabled=!vehicle}};
-(async()=>{try{const c=await fetch('app-config').then(r=>r.json());timezone=c.timezone||timezone}catch{}await refresh();setInterval(refresh,15000)})();
-</script></body></html>
+
+async function refresh(){
+  try {
+    const raw = await api('state');
+    const s = raw.result || raw;
+    state = s;
+    lastUpdate = new Date();
+    const v = pickVehicle(s);
+    renderHome(s, v);
+    renderEnergy(s);
+    renderForecast(loadpoint);
+    if (!dirty) readPlans(v);
+  } catch (e) {
+    const status = $('status');
+    status.className = 'status bad';
+    status.textContent = lastUpdate ? 'Geen verbinding, stand van ' + fmtClock(lastUpdate) : 'Geen verbinding met evcc';
+    if (!initialized) toast('Kan evcc niet bereiken. Controleer de instellingen van de app.', true);
+  }
+}
+
+/* Planning */
+const dayRows = WEEKDAYS.map((name, i) => {
+  const row = document.createElement('div');
+  row.className = 'day';
+  const main = document.createElement('button');
+  main.className = 'day-main';
+  main.innerHTML = '<span class="day-name"></span><span class="day-time num"></span><span class="day-soc num"></span>';
+  main.firstChild.textContent = name;
+  main.onclick = () => {
+    if (!days[i].on) { days[i].on = true; check.checked = true; change(i); }
+    openSheet(i);
+  };
+  const toggle = document.createElement('label');
+  toggle.className = 'day-switch';
+  const check = document.createElement('input');
+  check.type = 'checkbox';
+  check.setAttribute('switch', '');
+  check.setAttribute('aria-label', name + ' inschakelen');
+  check.onchange = () => { days[i].on = check.checked; change(i); };
+  toggle.append(check);
+  row.append(main, toggle);
+  $('days').append(row);
+  return {row, check, time:main.children[1], soc:main.children[2], main};
+});
+
+function updateDay(i){
+  const d = days[i], r = dayRows[i];
+  r.row.classList.toggle('off', !d.on);
+  r.check.checked = d.on;
+  r.time.textContent = d.on ? d.time : '';
+  r.soc.textContent = d.on ? d.soc + '%' : '';
+  r.main.setAttribute('aria-label', WEEKDAYS[i] + (d.on ? `, klaar om ${d.time}, laden tot ${d.soc} procent` : ', uit'));
+}
+
+function change(i){
+  dirty = true;
+  updateDay(i);
+  renderNext();
+  $('save').disabled = !vehicle;
+}
+
+$('save').onclick = async () => {
+  if (!vehicle) { toast('Geen auto gevonden in evcc', true); return; }
+  const name = state?.vehicles?.[vehicle]?.title || 'deze auto';
+  const yes = await ask({title:'Weekschema bewaren?', text:`De herhalende plannen van ${name} worden vervangen door dit schema.`, ok:'Bewaar'});
+  if (!yes) return;
+  const plans = days.flatMap((d, i) => d.on ? [{weekdays:[(i+1)%7], time:d.time, tz:timezone, soc:d.soc, active:true}] : []);
+  $('save').disabled = true;
+  try {
+    await api('vehicles/' + encodeURIComponent(vehicle) + '/plan/repeating', {method:'POST', body:JSON.stringify(plans)});
+    dirty = false;
+    toast('Weekschema bewaard');
+    await refresh();
+  } catch (e) {
+    $('save').disabled = false;
+    toast('Bewaren mislukt: ' + e.message, true);
+  }
+};
+
+/* Keuzewielen in eigen sheet: de iOS-tijdkiezer toont knoppen in de taal van het toestel. */
+const ITEM = 36;
+function makeWheel(values, label){
+  const el = document.createElement('div');
+  el.className = 'wheel';
+  el.tabIndex = 0;
+  el.setAttribute('aria-label', label);
+  values.forEach((value, index) => {
+    const item = document.createElement('div');
+    item.textContent = value;
+    item.onclick = () => el.scrollTo({top:index*ITEM, behavior:'smooth'});
+    el.append(item);
+  });
+  return {el, values, get value(){ return values[Math.max(0, Math.min(values.length-1, Math.round(el.scrollTop/ITEM)))]; }, set(v){ el.scrollTop = Math.max(0, values.indexOf(v))*ITEM; }};
+}
+const pad = n => String(n).padStart(2, '0');
+const hourWheel = makeWheel(Array.from({length:24}, (_, n) => pad(n)), 'Uur');
+const minuteWheel = makeWheel(Array.from({length:60}, (_, n) => pad(n)), 'Minuut');
+const socValues = Array.from({length:19}, (_, n) => (10 + n*5) + '%');
+let socWheel = makeWheel(socValues, 'Accu tot');
+$('wheels').append(hourWheel.el, minuteWheel.el, socWheel.el);
+
+let editing = null;
+function openSheet(i){
+  editing = i;
+  const d = days[i];
+  $('sheetTitle').textContent = WEEKDAYS[i];
+  const soc = d.soc + '%';
+  if (!socWheel.values.includes(soc)) {
+    const values = [...socValues, soc].sort((a, b) => parseInt(a) - parseInt(b));
+    const next = makeWheel(values, 'Accu tot');
+    socWheel.el.replaceWith(next.el);
+    socWheel = next;
+  }
+  $('sheet').classList.add('open');
+  $('scrim').classList.add('open');
+  hourWheel.set(d.time.slice(0,2));
+  minuteWheel.set(d.time.slice(3));
+  socWheel.set(soc);
+}
+function closeSheet(){
+  $('sheet').classList.remove('open');
+  $('scrim').classList.remove('open');
+  editing = null;
+}
+$('scrim').onclick = closeSheet;
+$('sheetCancel').onclick = closeSheet;
+$('sheetDone').onclick = () => {
+  const i = editing;
+  days[i].time = hourWheel.value + ':' + minuteWheel.value;
+  days[i].soc = parseInt(socWheel.value, 10);
+  closeSheet();
+  change(i);
+};
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if ($('alert').classList.contains('open')) $('alertCancel').click();
+  else if (editing !== null) closeSheet();
+});
+
+/* Navigatie */
+function showTab(name){
+  for (const tab of document.querySelectorAll('[data-tab]')) {
+    tab.setAttribute('aria-selected', tab.dataset.tab === name);
+    $(tab.dataset.tab).hidden = tab.dataset.tab !== name;
+  }
+}
+document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+$('nextRow').onclick = () => showTab('planning');
+
+/* Laadmodus: wijzigt direct, zoals een iOS-schakelaar; bij een fout springt hij terug. */
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = async () => {
+  const mode = b.dataset.mode;
+  if (!loadpoint) { toast('Geen laadpunt gevonden', true); return; }
+  if (pendingMode || mode === loadpoint.mode) return;
+  const index = (state?.loadpoints || []).indexOf(loadpoint) + 1;
+  pendingMode = mode;
+  renderMode(mode);
+  try {
+    await api('loadpoints/' + index + '/mode/' + mode, {method:'POST'});
+    pendingMode = null;
+    await refresh();
+  } catch (e) {
+    pendingMode = null;
+    renderMode(loadpoint?.mode);
+    toast('Laadmodus niet gewijzigd: ' + e.message, true);
+  }
+});
+
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+
+(async () => {
+  try {
+    const c = await fetch('app-config').then(r => r.json());
+    timezone = c.timezone || timezone;
+  } catch {}
+  await refresh();
+  requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('ready')));
+  setInterval(refresh, 15000);
+})();
+</script>
+</body>
+</html>

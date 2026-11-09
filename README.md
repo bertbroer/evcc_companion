@@ -1,12 +1,12 @@
-# EVCC Companion v0.6 — Home Assistant custom app
+# EVCC Companion v0.7 — Home Assistant custom app
 
 A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day recurring planner.
 
-## Updating from v0.4
+## Updating
 
 1. Extract the ZIP and copy its contents into your public GitHub repository, keeping `repository.yaml` in the root and the `evcc_companion` folder intact. Commit the changes.
 2. Home Assistant → Settings → Apps → App Store → ⋮ → Check for updates / Reload.
-3. Open EVCC Companion and update to **0.6.0**. If necessary restart it.
+3. Open EVCC Companion and update to **0.7.0**. If necessary restart it.
 4. Remove the old `companion_password` setting if it remains in the app's saved configuration. Version 0.3 does not use a login.
 5. In the app's **Network** section, map `8099/tcp` to host port `8099` and restart. Visit `http://<HOME_ASSISTANT_LAN_IP>:8099/` while on your home Wi-Fi.
 
@@ -19,7 +19,7 @@ A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day
 
 ## Security
 
-**No authentication is built into v0.6.** Anyone who can reach the app can change charging modes and recurring plans. **Never expose port 8099 directly to the internet.** Keep it restricted to a trusted local network or use a secured VPN / authenticated HTTPS reverse proxy for remote access. Avoid port forwarding on your router.
+**No authentication is built into this app.** Anyone who can reach the app can change charging modes and recurring plans. **Never expose port 8099 directly to the internet.** Keep it restricted to a trusted local network or use a secured VPN / authenticated HTTPS reverse proxy for remote access. Avoid port forwarding on your router.
 
 evcc credentials, if configured, stay on the server. Saving the weekly plan replaces existing repeating plans for the selected vehicle. This prototype has not been tested against your live evcc instance.
 
@@ -33,11 +33,6 @@ For an iPhone home-screen shortcut, open the standalone address in Safari and ch
 - If `effectiveMaxCurrent` is lower than `maxCurrent` while charging, the UI reports **Charging limited · cause unconfirmed**, not definitive load balancing. No authoritative reason code was supplied by the example API state.
 - No login. Keep port 8099 on trusted LAN/VPN only.
 
-## v0.6 layout
+## v0.7 interface
 
-Three tabs: Charging, Planner, Energy. The Electricity overview and Charging forecast sections now live on Energy, keeping Charging focused on battery state, modes and next departure. Visual style updated with 12px card radii, muted blue accents and reduced decoration. All API calls and weekly planner logic retained.
-
-
-## v0.6 appearance
-
-Reworked the app to match the chosen light mobile mockup: compact branded header, top three-tab navigation, tighter cards, muted blue/green accents, and the Electricity overview and Charging forecast on the Energy tab. No change to evcc API operations.
+Rebuilt as an iOS-native web app, always in Dutch regardless of the device language: system font, iOS grouped lists, a floating tab bar (Laden, Planning, Energie), segmented control for the charging mode, native switches, and light/dark mode. Dates and numbers are formatted with `nl-NL`. Time and target selection use in-app wheels, because the iOS time picker and `confirm()` show their buttons in the device language. The Laden tab always fits on one screen. The charging mode now applies on tap, without confirmation. No change to evcc API operations.
