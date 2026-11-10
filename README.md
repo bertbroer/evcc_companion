@@ -1,4 +1,4 @@
-# EVCC Companion v0.7 — Home Assistant custom app
+# EVCC Companion v0.8 — Home Assistant custom app
 
 A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day recurring planner.
 
@@ -6,7 +6,7 @@ A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day
 
 1. Extract the ZIP and copy its contents into your public GitHub repository, keeping `repository.yaml` in the root and the `evcc_companion` folder intact. Commit the changes.
 2. Home Assistant → Settings → Apps → App Store → ⋮ → Check for updates / Reload.
-3. Open EVCC Companion and update to **0.7.0**. If necessary restart it.
+3. Open EVCC Companion and update to **0.8.0**. If necessary restart it.
 4. Remove the old `companion_password` setting if it remains in the app's saved configuration. Version 0.3 does not use a login.
 5. In the app's **Network** section, map `8099/tcp` to host port `8099` and restart. Visit `http://<HOME_ASSISTANT_LAN_IP>:8099/` while on your home Wi-Fi.
 
@@ -36,3 +36,14 @@ For an iPhone home-screen shortcut, open the standalone address in Safari and ch
 ## v0.7 interface
 
 Rebuilt as an iOS-native web app, always in Dutch regardless of the device language: system font, iOS grouped lists, a floating tab bar (Laden, Planning, Energie), segmented control for the charging mode, native switches, and light/dark mode. Dates and numbers are formatted with `nl-NL`. Time and target selection use in-app wheels, because the iOS time picker and `confirm()` show their buttons in the device language. The Laden tab always fits on one screen. The charging mode now applies on tap, without confirmation. No change to evcc API operations.
+
+## v0.8 interface
+
+New, more modern look: light bento tiles on a soft grey-green background, one mint-green accent and Plus Jakarta Sans (loaded from Google Fonts, falls back to the system font when offline). Dark mode follows the device.
+
+- **Laden:** a 10-segment battery with the target of the next departure drawn dashed, a "Klaar om" time (end of the last planned charging slot), tiles for charging power and price, a link tile to the next departure, and three large mode buttons (Uit / Slim / Nu).
+- **Planning:** a mint "Volgend vertrek" card, the week schedule with time and target as chips, and the **Laadprognose** (moved here from Energie) with finish time, target, average planned price, a bar chart with the cheapest slot labelled and the departure marker.
+- **Energie:** a dark summary card that splits total use into charger and rest of the house, grid phases as bars with the headroom as a chip, and the charger per phase.
+- The tab bar is a dark floating pill; the active tab shows its label.
+
+No change to evcc API operations.

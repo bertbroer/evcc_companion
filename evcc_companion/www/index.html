@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="google" content="notranslate">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f2f7">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#eceFee">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0f0d">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,178 +14,247 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <title>EVCC</title>
 <style>
-/* Kleuren volgen de iOS-systeemkleuren; groen en blauw zijn het eigen accent. */
+/* Lichte bento-tegels met één mintgroen accent; donker volgt het toestel. */
 :root{
   color-scheme:light dark;
-  --bg:#f2f2f7;--card:#fff;--raised:#fff;
-  --label:#000;--label-2:rgba(60,60,67,.62);--label-3:rgba(60,60,67,.3);
-  --sep:rgba(60,60,67,.18);--track:rgba(120,120,128,.16);--press:rgba(120,120,128,.14);
-  --tint:#3e7d48;--on-tint:#fff;--battery:#6d9e6a;--blue:#3b8cb7;
-  --warn:#a86200;--bad:#c8463a;
-  --glass:rgba(255,255,255,.72);--glass-line:rgba(255,255,255,.7);
-  --shadow:0 8px 30px rgba(0,0,0,.12);
-  --thumb:#fff;--scrim:rgba(0,0,0,.28);
+  --bg:#eceFee;--card:#fff;--raised:#fff;
+  --ink:#111714;--muted:#5f6b66;--faint:#8a958f;
+  --chip:#f1f4f2;--track:#eef1f0;--line:#eef1f0;
+  --mint:#2bd38a;--mint-2:#5edda6;--mint-soft:#e2f8ee;--mint-ink:#0a7c4c;--on-mint:#0b1a12;--mint-dash:#8be4bd;
+  --warn:#b45a06;--warn-bar:#f08a24;--warn-soft:#fdf0e1;
+  --bad:#c8463a;--bad-soft:#fbe9e7;
+  --nav:#111714;--nav-ink:#c9d2cd;
+  --hero:#111714;--hero-muted:#a8b3ad;--hero-rest:#4a5751;
+  --shadow:0 10px 30px rgba(17,23,20,.05);
+  --shadow-lg:0 14px 34px rgba(17,23,20,.22);
+  --scrim:rgba(11,15,13,.32);
 
-  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
-  --rounded:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --font:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
 
-  --gutter:max(16px,calc((100vw - 560px)/2));
-  --top:max(env(safe-area-inset-top),14px);
-  --tab-h:62px;
-  --tab-bottom:max(14px,calc(env(safe-area-inset-bottom) - 13px));
-  --tab-space:calc(var(--tab-h) + var(--tab-bottom) + 14px);
-  --r-card:24px;
+  --gutter:max(20px,calc((100vw - 560px)/2));
+  --top:max(env(safe-area-inset-top),16px);
+  --tab-h:64px;
+  --tab-bottom:max(16px,calc(env(safe-area-inset-bottom) - 10px));
+  --tab-space:calc(var(--tab-h) + var(--tab-bottom) + 20px);
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg:#000;--card:#1c1c1e;--raised:#2c2c2e;
-  --label:#fff;--label-2:rgba(235,235,245,.62);--label-3:rgba(235,235,245,.3);
-  --sep:rgba(84,84,88,.6);--track:rgba(120,120,128,.32);--press:rgba(120,120,128,.26);
-  --tint:#8cc98a;--on-tint:#10240f;--battery:#5f9160;--blue:#64b0d8;
-  --warn:#ffb340;--bad:#ff6961;
-  --glass:rgba(44,44,46,.68);--glass-line:rgba(255,255,255,.1);
-  --shadow:0 8px 30px rgba(0,0,0,.5);
-  --thumb:#636366;--scrim:rgba(0,0,0,.5);
+  --bg:#0b0f0d;--card:#171d1a;--raised:#1e2622;
+  --ink:#f1f5f3;--muted:#9da9a3;--faint:#6f7b75;
+  --chip:#222a26;--track:#252d29;--line:#222a26;
+  --mint-soft:#12372a;--mint-ink:#5ee3a8;--mint-dash:#2f7a57;
+  --warn:#ffb340;--warn-soft:#3a2a12;
+  --bad:#ff6961;--bad-soft:#3a1a18;
+  --nav:#1e2622;
+  --hero:#1e2622;--hero-rest:#46534d;
+  --shadow:none;
+  --shadow-lg:0 14px 34px rgba(0,0,0,.55);
+  --scrim:rgba(0,0,0,.55);
 }}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
-body{font:400 17px/22px var(--sans);color:var(--label);-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;
-  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;touch-action:manipulation}
-:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+body{font:500 16px/22px var(--font);color:var(--ink);-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;touch-action:manipulation;text-align:inherit}
+:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
 [hidden]{display:none!important}
-.num{font-variant-numeric:tabular-nums}
+svg{flex:none}
 
 /* Schermen */
-.screen{position:fixed;inset:0;padding:var(--top) var(--gutter) var(--tab-space);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
-.title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:41px}
-h1{font:700 34px/41px var(--sans);letter-spacing:.01em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.subtitle{font-size:15px;line-height:20px;color:var(--label-2);margin:2px 0 0}
+.screen{position:fixed;inset:0;padding:calc(var(--top) + 8px) var(--gutter) var(--tab-space);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;display:flex;flex-direction:column;gap:12px}
+.screen>*{flex:none}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;margin-bottom:4px}
+.top-text{min-width:0}
+h1{font:800 28px/34px var(--font);letter-spacing:-.02em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font-size:13px;line-height:18px;color:var(--muted);margin:2px 0 0}
+.sub.bad{color:var(--bad);font-weight:700}
+.subtitle{font-size:14px;line-height:20px;color:var(--muted);margin:-6px 0 0}
+.h2{font:800 15px/20px var(--font);margin:6px 0 0}
+.h2-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.h2-row .h2{margin:0}
+.note{font-size:13px;line-height:18px;color:var(--muted);margin:0}
+.card{background:var(--card);border-radius:26px;box-shadow:var(--shadow)}
+.card-pad{padding:20px;display:flex;flex-direction:column;gap:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-head h2{font:800 17px/22px var(--font);margin:0}
+.chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:15px;background:var(--chip);font-size:13px;font-weight:700;white-space:nowrap}
+.chip svg{width:13px;height:13px;fill:currentColor}
+.chip.mint{background:var(--mint-soft);color:var(--mint-ink)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.ico{width:40px;height:40px;border-radius:13px;background:var(--chip);display:flex;align-items:center;justify-content:center;flex:none}
+.ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lbl{display:block;font-size:13px;line-height:18px;color:var(--muted);font-weight:600}
+.conn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:16px;background:var(--card);font-size:13px;font-weight:700;box-shadow:var(--shadow);flex:none}
+.conn i{width:8px;height:8px;border-radius:4px;background:var(--faint)}
+.conn.ok i{background:var(--mint)}
+.conn.bad i{background:var(--bad)}
 
-/* Lijsten */
-.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font:600 15px/20px var(--sans);color:var(--label-2);margin:26px 16px 7px}
-.section-head .side{font-weight:400;text-align:right}
-.list{background:var(--card);border-radius:var(--r-card);overflow:hidden}
-.row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:50px;padding:11px 16px;text-align:left}
-.row+.row::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
-.row .value{color:var(--label-2);text-align:right;white-space:nowrap}
-.row .unit{font-size:15px}
-button.row:active,.day-main:active{background:var(--press)}
-.chevron{flex:none;width:8px;height:14px;margin-left:8px;color:var(--label-3)}
-.value-wrap{display:flex;align-items:center;min-width:0}
-.note{font-size:13px;line-height:18px;color:var(--label-2);margin:7px 16px 0}
+/* Tab 1: past op één scherm; bij weinig hoogte schuift alles iets in. */
+#home{gap:12px}
+.hero{padding:20px;display:flex;flex-direction:column;gap:14px}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero-top .goal{font-size:13px;color:var(--muted);font-weight:700}
+.hero-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.soc{display:flex;align-items:baseline;gap:2px;line-height:1;font-size:clamp(56px,9.4vh,78px);font-weight:800;letter-spacing:-.04em}
+.soc small{font-size:.4em;font-weight:700;color:var(--muted);letter-spacing:0}
+.finish{display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-bottom:6px}
+.finish b{font-size:22px;line-height:26px;font-weight:800}
+.segments{display:flex;gap:5px}
+.seg{position:relative;flex:1;height:clamp(30px,4.8vh,42px);border-radius:9px;background:var(--track);overflow:hidden}
+.seg i{position:absolute;inset:0 auto 0 0;width:0;background:var(--mint);transition:width .6s cubic-bezier(.3,.8,.3,1)}
+.seg.goal{background:var(--mint-soft);box-shadow:inset 0 0 0 2px var(--mint-dash)}
+.segments.low .seg i{background:var(--bad)}
+.segments.charging .seg.tip i{background:var(--mint-2);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
 
-/* Tab 1: past altijd op één scherm; de batterij vangt het hoogteverschil op. */
-#home{display:flex;flex-direction:column;overflow:hidden}
-.status{display:flex;align-items:center;gap:5px;font-size:15px;line-height:20px;color:var(--label-2);margin-top:2px;min-height:20px}
-.status svg{width:11px;height:14px;fill:currentColor;flex:none}
-.status.charging{color:var(--tint);font-weight:600}
-.status.bad{color:var(--bad);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.big{display:block;font-size:22px;line-height:28px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.big .unit{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:0}
+.link-tile{display:flex;align-items:center;gap:14px;width:100%;border-radius:24px;padding:14px 14px 14px 16px;transition:transform .15s}
+.link-tile:active{transform:scale(.98)}
+.lt-text{flex:1;min-width:0}
+.lt-val{display:block;font-size:17px;line-height:22px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.go{width:44px;height:44px;border-radius:15px;background:var(--chip);display:flex;align-items:center;justify-content:center;flex:none}
+.go svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 
-.battery-wrap{flex:1 1 150px;display:flex;flex-direction:column;justify-content:center;min-height:0;margin:14px 0 0;max-height:300px}
-.battery{--soc:0%;position:relative;display:flex;align-items:center;flex:1 1 auto;min-height:70px;max-height:204px}
-.bat-body{position:relative;flex:1;height:100%;border-radius:34px;background:var(--track);overflow:hidden}
-.bat-nub{flex:none;width:6px;height:34%;margin-left:3px;border-radius:0 5px 5px 0;background:var(--track)}
-.bat-fill{position:absolute;inset:0 auto 0 0;width:var(--soc);background:var(--battery);overflow:hidden;transition:width .6s cubic-bezier(.3,.8,.3,1)}
-.battery.low .bat-fill{background:var(--bad)}
-.battery.charging .bat-fill::after{content:"";position:absolute;inset:0;width:45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.24),transparent);animation:sweep 3.2s ease-in-out infinite}
-@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(320%)}}
-.bat-num{position:absolute;inset:0;display:flex;align-items:center;padding-left:22px;font:700 clamp(58px,11.8vh,104px)/1 var(--rounded);letter-spacing:-.02em;color:var(--label);font-variant-numeric:tabular-nums}
-.bat-num small{font-size:.5em;font-weight:600;margin-left:.06em;letter-spacing:0}
-.bat-num.over{color:#fff;clip-path:inset(0 calc(100% - var(--soc)) 0 0);transition:clip-path .6s cubic-bezier(.3,.8,.3,1)}
-.bat-target{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--label);opacity:.55}
-.target-label{position:relative;height:18px;margin:5px 9px 0 0;font-size:13px;line-height:18px;color:var(--label-2)}
-.target-label span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-
-.home-lower{flex:none;margin-top:auto;padding-top:14px}
-.home-lower .section-head{margin-top:18px}
-.segmented{--i:0;--n:3;position:relative;display:grid;grid-template-columns:repeat(3,1fr);height:44px;padding:3px;border-radius:22px;background:var(--track)}
-.seg-thumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/var(--n));border-radius:19px;background:var(--thumb);box-shadow:0 2px 8px rgba(0,0,0,.14);transform:translateX(calc(var(--i)*100%));transition:transform .32s cubic-bezier(.3,1.25,.5,1)}
-.segmented.none .seg-thumb{opacity:0}
-.mode{position:relative;font-size:15px;font-weight:500;border-radius:19px;min-width:0}
-.mode.active{font-weight:600}
+.mode-block{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.mode-block .h2{margin:0}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mode{height:clamp(68px,10vh,84px);border-radius:22px;background:var(--card);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;text-align:center;transition:background .25s,color .25s,box-shadow .25s,transform .15s}
+.mode:active{transform:scale(.96)}
+.mode svg{width:22px;height:22px}
+.mode.active{background:var(--mint);color:var(--on-mint);box-shadow:0 10px 24px rgba(43,211,138,.32)}
 .mode-note{min-height:18px}
 
 /* Tabbalk */
-.tabbar{position:fixed;z-index:20;left:max(21px,calc((100vw - 420px)/2));right:max(21px,calc((100vw - 420px)/2));bottom:var(--tab-bottom);height:var(--tab-h);display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:31px;background:var(--glass);border:.5px solid var(--glass-line);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
-.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:27px;font-size:10.5px;line-height:13px;font-weight:500;color:var(--label)}
-.tab svg{width:26px;height:26px;fill:currentColor}
-.tab[aria-selected=true]{color:var(--tint);background:var(--press);font-weight:600}
+.tabbar{position:fixed;z-index:20;left:max(20px,calc((100vw - 420px)/2));right:max(20px,calc((100vw - 420px)/2));bottom:var(--tab-bottom);height:var(--tab-h);display:flex;align-items:center;gap:4px;padding:8px;border-radius:32px;background:var(--nav);box-shadow:var(--shadow-lg)}
+.tab{flex:1 1 0;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--nav-ink);font-size:15px;font-weight:800;transition:flex-grow .3s cubic-bezier(.3,1.1,.5,1),background .25s,color .25s}
+.tab svg{width:22px;height:22px}
+.tab span{display:none}
+.tab[aria-selected=true]{flex-grow:2.2;background:var(--mint);color:var(--on-mint)}
+.tab[aria-selected=true] span{display:inline}
 
 /* Planning */
-.save{flex:none;height:36px;padding:0 16px;border-radius:18px;font-size:15px;font-weight:600;background:var(--tint);color:var(--on-tint);transition:background .2s,color .2s}
-.save:disabled{background:var(--track);color:var(--label-3)}
-.day{position:relative;display:flex;align-items:stretch}
-.day+.day::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
-.day-main{flex:1;min-width:0;display:grid;grid-template-columns:1fr 58px 52px;align-items:center;gap:4px;min-height:52px;padding:0 4px 0 16px;text-align:left}
-.day-values{display:contents;color:var(--label-2)}
-.day-time{text-align:right;font-weight:600;color:var(--label)}
-.day-soc{text-align:right;color:var(--label-2)}
-.day.off .day-name{color:var(--label-2)}
-.day-switch{display:flex;align-items:center;padding:0 16px 0 10px}
-input[type=checkbox]{margin:0;accent-color:#34a853;width:51px;height:31px}
+.save{flex:none;height:44px;padding:0 20px;border-radius:22px;font-size:15px;font-weight:800;background:var(--ink);color:var(--bg);transition:background .2s,color .2s}
+.save:disabled{background:var(--track);color:var(--muted)}
+.next-card{background:var(--mint);color:var(--on-mint);border-radius:26px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.next-card .lbl{color:#0e3d27;font-weight:700}
+.next-card b{display:block;font-size:22px;line-height:28px;font-weight:800;letter-spacing:-.01em}
+.next-card .right{text-align:right}
+#days{padding:4px 8px 4px 16px}
+.day{display:flex;align-items:center;gap:8px;min-height:62px}
+.day+.day{border-top:1px solid var(--line)}
+.day-main{flex:1;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px;border-radius:14px;transition:opacity .15s}
+.day-main:active{opacity:.6}
+.day-name{flex:1;min-width:0;display:flex;flex-direction:column}
+.day-name b{font-size:16px;line-height:21px;font-weight:700}
+.day-name small{font-size:13px;line-height:18px;color:var(--muted)}
+.pill{height:34px;padding:0 12px;border-radius:12px;background:var(--chip);display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700}
+.pill svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pill.pct{background:var(--mint-soft);color:var(--mint-ink);font-weight:800}
+.day.off .pill{display:none}
+.day-switch{display:flex;align-items:center;padding:8px}
+input[type=checkbox]{margin:0;accent-color:var(--mint);width:51px;height:31px}
 .no-native-switch input[type=checkbox]{appearance:none;-webkit-appearance:none;position:relative;border-radius:16px;background:var(--track);cursor:pointer;transition:background .2s}
-.no-native-switch input[type=checkbox]::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s}
-.no-native-switch input[type=checkbox]:checked{background:#34a853}
+.no-native-switch input[type=checkbox]::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(17,23,20,.25);transition:transform .2s}
+.no-native-switch input[type=checkbox]:checked{background:var(--mint)}
 .no-native-switch input[type=checkbox]:checked::after{transform:translateX(20px)}
 
+/* Laadprognose */
+.stats{display:flex;gap:24px;flex-wrap:wrap}
+.stats b{display:block;font-size:22px;line-height:28px;font-weight:800}
+.chart{position:relative;height:130px;margin-top:4px;border-bottom:2px solid var(--track)}
+.slot{position:absolute;bottom:2px;background:var(--mint);border-radius:7px 7px 3px 3px;box-shadow:inset -2px 0 0 var(--card);min-width:3px}
+.price-pin{position:absolute;transform:translateX(-50%);height:22px;padding:0 7px;border-radius:11px;background:var(--ink);color:var(--bg);font-size:11px;line-height:22px;font-weight:700;white-space:nowrap}
+.dep{position:absolute;top:22px;bottom:0;width:0;border-left:2px dashed var(--ink)}
+.dep-label{position:absolute;top:0;transform:translateX(-50%);font-size:11px;line-height:18px;font-weight:700;white-space:nowrap;background:var(--card);padding:0 4px;border-radius:6px}
+.axis{display:flex;justify-content:space-between;font-size:11px;line-height:16px;font-weight:600;color:var(--muted)}
+.blocks{display:flex;flex-direction:column}
+.block{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:14px;font-weight:600;border-top:1px solid var(--line)}
+.block span:last-child{color:var(--muted)}
+.empty{color:var(--muted);font-size:14px}
+
 /* Energie */
-.meter{display:grid;grid-template-columns:24px 1fr 62px;align-items:center;gap:10px;min-height:44px;padding:0 16px;position:relative}
-.meter+.meter::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
-.meter .ph{font-size:15px;color:var(--label-2)}
-.meter .val{text-align:right}
-.bar{height:6px;border-radius:3px;background:var(--track);overflow:hidden}
-.bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--tint);transition:width .4s}
-.charger .bar i{background:var(--blue)}
-.bar.high i{background:var(--warn)}
-.status-ok{color:var(--label-2)}.status-warn{color:var(--warn)}
-.chart-wrap{padding:14px 16px 12px;position:relative}
-.chart-wrap::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
-.chart-top{display:flex;justify-content:space-between;font-size:12px;line-height:16px;color:var(--label-2);margin-bottom:5px}
-.chart{position:relative;height:96px;border-bottom:.5px solid var(--label-3)}
-.slot{position:absolute;bottom:0;background:var(--tint);border-radius:2px 2px 0 0;box-shadow:inset -1px 0 0 var(--card);min-width:2px}
-.dep{position:absolute;top:0;bottom:0;width:0;border-left:1.5px dashed var(--label-2)}
-.axis{display:flex;justify-content:space-between;font-size:12px;line-height:16px;color:var(--label-2);margin-top:5px}
-.empty{padding:15px 16px;color:var(--label-2);position:relative}
-.empty::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+.e-hero{background:var(--hero);color:#fff;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.e-hero .lbl{color:var(--hero-muted)}
+.e-total{font-size:48px;line-height:1;font-weight:800;letter-spacing:-.03em;margin-top:4px}
+.e-total .unit{font-size:22px;color:var(--hero-muted);letter-spacing:0}
+.split{display:flex;gap:4px;height:14px}
+.split i{border-radius:7px;min-width:0;transition:flex-grow .4s}
+.split .c{background:var(--mint)}.split .r{background:var(--hero-rest)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13px;font-weight:600}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend span:last-child{color:var(--nav-ink)}
+.legend i{width:10px;height:10px;border-radius:3px}
+.e-hero .note{color:var(--hero-muted)}
+.meter{display:flex;align-items:center;gap:12px}
+.meter .ph{width:22px;font-size:13px;font-weight:700;color:var(--muted)}
+.bar{flex:1;height:12px;border-radius:6px;background:var(--track);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:6px;background:var(--mint);transition:width .4s}
+.bar.high i{background:var(--warn-bar)}
+.meter .val{width:60px;text-align:right;font-size:15px;font-weight:700}
+.card .note{font-size:12px;line-height:17px}
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.phase{background:var(--chip);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.phase span{font-size:12px;font-weight:700;color:var(--muted)}
+.phase b{font-size:18px;line-height:24px;font-weight:800;white-space:nowrap}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:14px;font-weight:600}
+.kv span:first-child{color:var(--muted)}
 
 /* Sheet en alert */
 .scrim{position:fixed;inset:0;z-index:30;background:var(--scrim);opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
 .scrim.open{opacity:1;visibility:visible}
-.sheet{position:fixed;z-index:31;left:max(8px,calc((100vw - 500px)/2));right:max(8px,calc((100vw - 500px)/2));bottom:max(8px,calc(env(safe-area-inset-bottom) - 20px));border-radius:36px;background:var(--raised);box-shadow:var(--shadow);padding:10px 12px 18px;transform:translateY(calc(100% + 40px));visibility:hidden;transition:transform .38s cubic-bezier(.25,1,.35,1),visibility .38s}
+.sheet{position:fixed;z-index:31;left:max(8px,calc((100vw - 500px)/2));right:max(8px,calc((100vw - 500px)/2));bottom:max(8px,calc(env(safe-area-inset-bottom) - 20px));border-radius:36px;background:var(--raised);box-shadow:var(--shadow-lg);padding:10px 14px 18px;transform:translateY(calc(100% + 40px));visibility:hidden;transition:transform .38s cubic-bezier(.25,1,.35,1),visibility .38s}
 .sheet.open{transform:none;visibility:visible}
-.sheet-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:46px}
-.sheet-head h2{font:600 17px/22px var(--sans);margin:0}
-.sheet-btn{justify-self:start;height:44px;padding:0 10px;color:var(--label-2)}
-.sheet-btn.done{justify-self:end;color:var(--tint);font-weight:600}
-.wheel-labels{display:grid;grid-template-columns:2fr 1fr;text-align:center;font-size:13px;line-height:18px;color:var(--label-2);margin-top:8px}
+.sheet-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:50px}
+.sheet-head h2{font:800 17px/22px var(--font);margin:0}
+.sheet-btn{justify-self:start;height:40px;padding:0 14px;border-radius:20px;color:var(--muted);font-weight:700;background:var(--chip)}
+.sheet-btn.done{justify-self:end;background:var(--mint);color:var(--on-mint);font-weight:800}
+.wheel-labels{display:grid;grid-template-columns:2fr 1fr;text-align:center;font-size:13px;line-height:18px;font-weight:700;color:var(--muted);margin-top:8px}
 .wheels{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;height:180px;margin-top:4px}
-.wheels::before{content:"";position:absolute;left:0;right:0;top:72px;height:36px;border-radius:12px;background:var(--track)}
+.wheels::before{content:"";position:absolute;left:0;right:0;top:72px;height:36px;border-radius:12px;background:var(--chip)}
 .wheel{position:relative;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;padding:72px 0;text-align:center;-webkit-mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent);mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent)}
 .wheel::-webkit-scrollbar{display:none}
-.wheel div{height:36px;line-height:36px;font-size:22px;scroll-snap-align:center;font-variant-numeric:tabular-nums}
+.wheel div{height:36px;line-height:36px;font-size:22px;font-weight:700}
 
-.alert{position:fixed;z-index:33;left:50%;top:50%;width:min(306px,calc(100vw - 48px));transform:translate(-50%,-46%) scale(.96);opacity:0;visibility:hidden;border-radius:30px;background:var(--raised);box-shadow:var(--shadow);padding:22px 18px 14px;text-align:center;transition:opacity .2s,transform .2s,visibility .2s}
+.alert{position:fixed;z-index:33;left:50%;top:50%;width:min(320px,calc(100vw - 48px));transform:translate(-50%,-46%) scale(.96);opacity:0;visibility:hidden;border-radius:30px;background:var(--raised);box-shadow:var(--shadow-lg);padding:24px 18px 16px;text-align:center;transition:opacity .2s,transform .2s,visibility .2s}
 .alert.open{opacity:1;visibility:visible;transform:translate(-50%,-50%)}
-.alert h2{font:600 17px/22px var(--sans);margin:0 0 6px}
-.alert p{font-size:15px;line-height:20px;margin:0 0 18px;color:var(--label-2)}
+.alert h2{font:800 18px/24px var(--font);margin:0 0 6px}
+.alert p{font-size:15px;line-height:21px;margin:0 0 18px;color:var(--muted)}
 .alert-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.alert-actions button{height:46px;border-radius:23px;background:var(--track);font-weight:500}
-.alert-actions .primary{background:var(--tint);color:var(--on-tint);font-weight:600}
+.alert-actions button{height:48px;border-radius:24px;background:var(--chip);font-weight:700;text-align:center}
+.alert-actions .primary{background:var(--ink);color:var(--bg);font-weight:800}
 .scrim.over-sheet{z-index:32}
 
-.toast{position:fixed;z-index:40;left:50%;top:calc(var(--top) + 2px);max-width:calc(100vw - 32px);transform:translate(-50%,calc(-100% - var(--top) - 40px));visibility:hidden;padding:11px 18px;border-radius:24px;background:var(--glass);border:.5px solid var(--glass-line);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);font-size:15px;line-height:20px;font-weight:500;text-align:center;transition:transform .36s cubic-bezier(.25,1,.35,1),visibility .36s}
+.toast{position:fixed;z-index:40;left:50%;top:calc(var(--top) + 2px);max-width:calc(100vw - 32px);transform:translate(-50%,calc(-100% - var(--top) - 40px));visibility:hidden;padding:12px 18px;border-radius:24px;background:var(--nav);color:#fff;box-shadow:var(--shadow-lg);font-size:15px;line-height:20px;font-weight:700;text-align:center;transition:transform .36s cubic-bezier(.25,1,.35,1),visibility .36s}
 .toast.show{transform:translate(-50%,0);visibility:visible}
-.toast.error{color:var(--bad)}
+.toast.error{background:var(--bad)}
 
-@media (max-height:640px){
-  h1{font-size:28px;line-height:34px}.title-row{min-height:34px}
-  .row{min-height:44px;padding-block:8px}
-  .home-lower .section-head{margin-top:10px}
-  .home-lower{padding-top:8px}
-  .battery-wrap{margin-top:8px}.mode-note{display:none}
+@media (max-height:720px){
+  #home{gap:10px}
+  .top{min-height:44px;margin-bottom:0}
+  .hero{padding:16px;gap:10px}
+  .soc{font-size:56px}
+  .seg{height:30px}
+  .tile{padding:14px 16px}
+  .tile .ico{display:none}
+  .link-tile{padding:10px 10px 10px 14px}
+  .link-tile .ico{width:34px;height:34px;border-radius:11px}
+  .go{width:38px;height:38px;border-radius:13px}
+  .mode-block{margin-top:0;gap:8px}
+  .mode{height:64px;gap:4px}
+  .mode svg{width:18px;height:18px}
+  .mode-note{display:none}
+}
+@media (max-height:620px){
+  .mode svg{display:none}
 }
 html:not(.ready) *{transition:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -194,88 +263,123 @@ html:not(.ready) *{transition:none!important}
 <body>
 
 <main id="home" class="screen" role="tabpanel" aria-labelledby="tab-home">
-  <div class="title-row"><h1 id="vehicleTitle">Je auto</h1></div>
-  <div class="status" id="status" role="status"><span id="statusText">Verbinden met evcc</span></div>
-
-  <div class="battery-wrap">
-    <div class="battery" id="battery" role="img" aria-label="Accu onbekend">
-      <div class="bat-body">
-        <div class="bat-num" aria-hidden="true"><span><span class="socValue">—</span><small>%</small></span></div>
-        <div class="bat-fill"></div>
-        <div class="bat-num over" aria-hidden="true"><span><span class="socValue">—</span><small>%</small></span></div>
-        <div class="bat-target" id="targetLine" hidden></div>
-      </div>
-      <div class="bat-nub"></div>
+  <header class="top">
+    <div class="top-text">
+      <h1 id="vehicleTitle">Je auto</h1>
+      <p class="sub" id="status" role="status">Verbinden met evcc</p>
     </div>
-    <div class="target-label"><span id="targetLabel" hidden></span></div>
+    <span class="conn" id="conn"><i></i>evcc</span>
+  </header>
+
+  <section class="card hero" aria-label="Accu">
+    <div class="hero-top">
+      <span class="chip" id="chargeChip">Onbekend</span>
+      <span class="goal" id="targetLabel" hidden></span>
+    </div>
+    <div class="hero-mid">
+      <div class="soc" aria-hidden="true"><span id="socValue">—</span><small>%</small></div>
+      <div class="finish" id="finish" hidden><span class="lbl">Klaar om</span><b id="finishTime"></b></div>
+    </div>
+    <div class="segments" id="battery" role="img" aria-label="Accu onbekend"></div>
+  </section>
+
+  <div class="tiles">
+    <div class="card tile">
+      <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/></svg></span>
+      <div><span class="lbl">Laadvermogen</span><span class="big" id="power">—</span></div>
+    </div>
+    <div class="card tile">
+      <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 6.5A7 7 0 1 0 17.5 17.5M4 10.5h9M4 13.5h9"/></svg></span>
+      <div><span class="lbl">Stroomprijs</span><span class="big" id="price">—</span></div>
+    </div>
   </div>
 
-  <div class="home-lower">
-    <div class="list">
-      <div class="row"><span>Laadvermogen</span><span class="value num" id="power">—</span></div>
-      <div class="row"><span>Stroomprijs</span><span class="value num" id="price">—</span></div>
-      <button class="row" id="nextRow"><span>Volgend vertrek</span><span class="value-wrap"><span class="value num" id="next">Geen planning</span><svg class="chevron" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg></span></button>
-    </div>
-    <div class="section-head"><span id="modeLabel">Laadmodus</span></div>
-    <div class="segmented none" id="segmented" role="radiogroup" aria-labelledby="modeLabel">
-      <div class="seg-thumb"></div>
-      <button class="mode" data-mode="off" role="radio" aria-checked="false">Uit</button>
-      <button class="mode" data-mode="smart" role="radio" aria-checked="false">Slim</button>
-      <button class="mode" data-mode="now" role="radio" aria-checked="false">Nu</button>
+  <button class="card link-tile" id="nextRow">
+    <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>
+    <span class="lt-text"><span class="lbl">Volgend vertrek</span><span class="lt-val" id="next">Geen planning</span></span>
+    <span class="go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+  </button>
+
+  <div class="mode-block">
+    <h2 class="h2" id="modeLabel">Laadmodus</h2>
+    <div class="modes" id="segmented" role="radiogroup" aria-labelledby="modeLabel">
+      <button class="mode" data-mode="off" role="radio" aria-checked="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v8M6.3 6.3a8 8 0 1 0 11.4 0"/></svg>Uit</button>
+      <button class="mode" data-mode="smart" role="radio" aria-checked="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19C5 11 11 5 19 5c0 8-6 14-14 14zM5 19l7-7"/></svg>Slim</button>
+      <button class="mode" data-mode="now" role="radio" aria-checked="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.6 2.2c.3-.5 1-.2.9.3L13.2 10h5.2c.5 0 .8.6.5 1l-8.5 10.8c-.4.5-1.1.1-1-.4l1.4-7.9H5.6c-.5 0-.8-.6-.5-1z"/></svg>Nu</button>
     </div>
     <p class="note mode-note" id="modeNote"></p>
   </div>
 </main>
 
 <main id="planning" class="screen" role="tabpanel" aria-labelledby="tab-planning" hidden>
-  <div class="title-row"><h1>Planning</h1><button class="save" id="save" disabled>Bewaar</button></div>
+  <header class="top">
+    <h1>Planning</h1>
+    <button class="save" id="save" disabled>Bewaar</button>
+  </header>
   <p class="subtitle">Elke week hetzelfde. Kies de dagen waarop je de auto nodig hebt.</p>
-  <div class="section-head" style="margin-top:20px"><span>Weekschema</span></div>
-  <div class="list" id="days"></div>
+
+  <section class="next-card" aria-label="Volgend vertrek">
+    <div><span class="lbl">Volgend vertrek</span><b id="nextCardWhen">Geen planning</b></div>
+    <div class="right"><span class="lbl">Laden tot</span><b id="nextCardSoc">—</b></div>
+  </section>
+
+  <h2 class="h2">Weekschema</h2>
+  <div class="card" id="days"></div>
   <p class="note">Bewaren vervangt de herhalende plannen van deze auto in evcc. Eenmalige plannen blijven staan.</p>
-</main>
 
-<main id="energy" class="screen" role="tabpanel" aria-labelledby="tab-energy" hidden>
-  <div class="title-row"><h1>Energie</h1></div>
-
-  <div class="section-head" style="margin-top:16px"><span>Verbruik nu</span></div>
-  <div class="list">
-    <div class="row"><span>Huis, met laadpaal</span><span class="value num" id="housePower">—</span></div>
-    <div class="row"><span>Laadpaal</span><span class="value num" id="chargerPower">—</span></div>
-  </div>
-  <p class="note" id="energyNote" hidden></p>
-
-  <div class="section-head"><span>Netaansluiting</span><span class="side" id="balanceStatus">Controleren</span></div>
-  <div class="list">
-    <div class="meter"><span class="ph">L1</span><div class="bar" id="gridTrack1"><i id="gridBar1"></i></div><span class="val num" id="grid1">—</span></div>
-    <div class="meter"><span class="ph">L2</span><div class="bar" id="gridTrack2"><i id="gridBar2"></i></div><span class="val num" id="grid2">—</span></div>
-    <div class="meter"><span class="ph">L3</span><div class="bar" id="gridTrack3"><i id="gridBar3"></i></div><span class="val num" id="grid3">—</span></div>
-    <div class="row"><span>Ruimte op drukste fase</span><span class="value num" id="headroom">—</span></div>
-  </div>
-  <p class="note" id="gridNote"></p>
-
-  <div class="section-head"><span>Laadpaal per fase</span></div>
-  <div class="list charger">
-    <div class="meter"><span class="ph">L1</span><div class="bar"><i id="chargeBar1"></i></div><span class="val num" id="phase1">—</span></div>
-    <div class="meter"><span class="ph">L2</span><div class="bar"><i id="chargeBar2"></i></div><span class="val num" id="phase2">—</span></div>
-    <div class="meter"><span class="ph">L3</span><div class="bar"><i id="chargeBar3"></i></div><span class="val num" id="phase3">—</span></div>
-    <div class="row"><span>Maximale laadstroom</span><span class="value num" id="maxCurrent">—</span></div>
-    <div class="row"><span>Huidige limiet</span><span class="value num" id="effectiveCurrent">—</span></div>
-  </div>
-
-  <div class="section-head"><span>Laadprognose</span><span class="side" id="forecastStatus">Controleren</span></div>
-  <div class="list" id="forecast">
-    <div class="row"><span>Klaar op</span><span class="value num" id="forecastTime">—</span></div>
-    <div class="row"><span>Doel</span><span class="value num" id="forecastSoc">—</span></div>
+  <div class="h2-row"><h2 class="h2">Laadprognose</h2><span class="chip" id="forecastStatus">Controleren</span></div>
+  <section class="card card-pad" id="forecast" aria-label="Laadprognose">
+    <div class="stats">
+      <div><span class="lbl">Klaar om</span><b id="forecastFinish">—</b></div>
+      <div><span class="lbl">Doel</span><b id="forecastSoc">—</b></div>
+      <div><span class="lbl">Gem. prijs</span><b id="forecastPrice">—</b></div>
+    </div>
     <div id="forecastChart"></div>
-  </div>
+    <div class="blocks" id="forecastBlocks"></div>
+  </section>
   <p class="note" id="forecastNote"></p>
 </main>
 
+<main id="energy" class="screen" role="tabpanel" aria-labelledby="tab-energy" hidden>
+  <header class="top"><h1>Energie</h1></header>
+
+  <section class="e-hero" aria-label="Verbruik nu">
+    <div>
+      <span class="lbl">Huis, met laadpaal</span>
+      <div class="e-total" id="housePower">—</div>
+    </div>
+    <div class="split" id="split" aria-hidden="true"><i class="c" id="splitCharger"></i><i class="r" id="splitRest"></i></div>
+    <div class="legend">
+      <span><i style="background:var(--mint)"></i>Laadpaal <b id="chargerPower">—</b></span>
+      <span><i style="background:var(--hero-rest)"></i>Rest <b id="restPower">—</b></span>
+    </div>
+    <p class="note" id="energyNote" hidden></p>
+  </section>
+
+  <section class="card card-pad" aria-labelledby="gridTitle">
+    <div class="card-head"><h2 id="gridTitle">Netaansluiting</h2><span class="chip" id="headroom">Ruimte —</span></div>
+    <div class="meter"><span class="ph">L1</span><div class="bar" id="gridTrack1"><i id="gridBar1"></i></div><span class="val" id="grid1">—</span></div>
+    <div class="meter"><span class="ph">L2</span><div class="bar" id="gridTrack2"><i id="gridBar2"></i></div><span class="val" id="grid2">—</span></div>
+    <div class="meter"><span class="ph">L3</span><div class="bar" id="gridTrack3"><i id="gridBar3"></i></div><span class="val" id="grid3">—</span></div>
+    <p class="note" id="gridNote"></p>
+  </section>
+
+  <section class="card card-pad" aria-labelledby="chargerTitle">
+    <div class="card-head"><h2 id="chargerTitle">Laadpaal per fase</h2><span class="chip" id="balanceStatus">Controleren</span></div>
+    <div class="phases">
+      <div class="phase"><span>L1</span><b id="phase1">—</b></div>
+      <div class="phase"><span>L2</span><b id="phase2">—</b></div>
+      <div class="phase"><span>L3</span><b id="phase3">—</b></div>
+    </div>
+    <div class="kv"><span>Maximale laadstroom</span><span id="maxCurrent">—</span></div>
+    <div class="kv"><span>Huidige limiet</span><span id="effectiveCurrent">—</span></div>
+  </section>
+</main>
+
 <nav class="tabbar" role="tablist" aria-label="Schermen">
-  <button class="tab" id="tab-home" role="tab" data-tab="home" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 2.2c.3-.5 1-.2.9.3L13.2 10h5.2c.5 0 .8.6.5 1l-8.5 10.8c-.4.5-1.1.1-1-.4l1.4-7.9H5.6c-.5 0-.8-.6-.5-1z"/></svg>Laden</button>
-  <button class="tab" id="tab-planning" role="tab" data-tab="planning" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7 2.5a1 1 0 0 1 1 1V5h8V3.5a1 1 0 1 1 2 0V5h.5A3.5 3.5 0 0 1 22 8.5v10a3.5 3.5 0 0 1-3.5 3.5h-13A3.5 3.5 0 0 1 2 18.5v-10A3.5 3.5 0 0 1 5.5 5H6V3.5a1 1 0 0 1 1-1ZM4 10.5v8A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-8H4Zm3.5 2.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm4.5 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm4.5 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z"/></svg>Planning</button>
-  <button class="tab" id="tab-energy" role="tab" data-tab="energy" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="12" width="4.5" height="9" rx="1.6"/><rect x="9.75" y="7" width="4.5" height="14" rx="1.6"/><rect x="16" y="3" width="4.5" height="18" rx="1.6"/></svg>Energie</button>
+  <button class="tab" id="tab-home" role="tab" data-tab="home" aria-selected="true" aria-label="Laden"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.6 2.2c.3-.5 1-.2.9.3L13.2 10h5.2c.5 0 .8.6.5 1l-8.5 10.8c-.4.5-1.1.1-1-.4l1.4-7.9H5.6c-.5 0-.8-.6-.5-1z"/></svg><span aria-hidden="true">Laden</span></button>
+  <button class="tab" id="tab-planning" role="tab" data-tab="planning" aria-selected="false" aria-label="Planning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span aria-hidden="true">Planning</span></button>
+  <button class="tab" id="tab-energy" role="tab" data-tab="energy" aria-selected="false" aria-label="Energie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 20v-6M12 20V10M19 20V4"/></svg><span aria-hidden="true">Energie</span></button>
 </nav>
 
 <div class="scrim" id="scrim"></div>
@@ -306,10 +410,12 @@ const MODE_NOTES = {
   smart: 'evcc bepaalt wanneer er geladen wordt.',
   now: 'De auto laadt direct, op vol vermogen.'
 };
-const BOLT = '<svg viewBox="0 0 11 14" aria-hidden="true"><path d="M6.7.3c.2-.3.6-.1.6.2L6.5 5.6h3.3c.3 0 .5.4.3.6L4.3 13.7c-.2.3-.7.1-.6-.3l.8-5H1.2c-.3 0-.5-.4-.3-.6z"/></svg>';
+const BOLT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 2.2c.3-.5 1-.2.9.3L13.2 10h5.2c.5 0 .8.6.5 1l-8.5 10.8c-.4.5-1.1.1-1-.4l1.4-7.9H5.6c-.5 0-.8-.6-.5-1z"/></svg>';
+const CLOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 
 let state = null, vehicle = null, loadpoint = null, timezone = 'Europe/Amsterdam';
 let dirty = false, initialized = false, pendingMode = null, lastUpdate = null;
+let socNow = null, charging = false;
 let days = WEEKDAYS.map(() => ({on:false, time:'07:30', soc:80}));
 
 if (!('switch' in HTMLInputElement.prototype)) document.documentElement.classList.add('no-native-switch');
@@ -324,7 +430,10 @@ const dateFormat = options => new Intl.DateTimeFormat('nl-NL', {timeZone:timezon
 const fmtDayTime = t => { const parts = dateFormat({weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}).formatToParts(new Date(t)); const get = type => parts.find(p => p.type === type)?.value; return `${get('weekday')} ${get('day')} ${get('month')}, ${get('hour')}:${get('minute')}`; };
 const fmtShort = t => { const parts = dateFormat({weekday:'short', hour:'2-digit', minute:'2-digit'}).formatToParts(new Date(t)); const get = type => parts.find(p => p.type === type)?.value; return `${get('weekday')} ${get('hour')}:${get('minute')}`; };
 const fmtClock = t => dateFormat({hour:'2-digit', minute:'2-digit'}).format(new Date(t));
+const dayKey = t => dateFormat({year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date(t));
+const fmtWhen = t => dayKey(t) === dayKey(Date.now()) ? fmtClock(t) : fmtShort(t);
 const fmtDuration = mins => { const h = Math.floor(mins/60), m = Math.round(mins%60); return (h ? h + ' u' : '') + (h && m ? ' ' : '') + (m || !h ? m + ' min' : ''); };
+const setUnit = (el, value, unit) => { const u = document.createElement('span'); u.className = 'unit'; u.textContent = unit; el.replaceChildren(value, u); };
 
 /* Meldingen */
 let toastTimer;
@@ -400,47 +509,80 @@ function nextDeparture(){
   return list.sort((a, b) => a.delta - b.delta)[0] || null;
 }
 
+/* Accu: tien segmenten; gestippeld tot het doel van het volgende vertrek. */
+const segments = Array.from({length:10}, () => {
+  const seg = document.createElement('span');
+  seg.className = 'seg';
+  seg.append(document.createElement('i'));
+  $('battery').append(seg);
+  return seg;
+});
+function renderBattery(){
+  const goal = nextDeparture()?.soc ?? null;
+  const tip = socNow === null ? -1 : Math.min(9, Math.floor(Math.max(0, socNow - 0.01)/10));
+  segments.forEach((seg, i) => {
+    const fill = socNow === null ? 0 : Math.max(0, Math.min(10, socNow - i*10))*10;
+    seg.firstChild.style.width = fill + '%';
+    seg.classList.toggle('goal', goal !== null && fill < 100 && i*10 < goal);
+    seg.classList.toggle('tip', i === tip);
+  });
+  const el = $('battery');
+  el.classList.toggle('charging', charging);
+  el.classList.toggle('low', socNow !== null && socNow <= 15);
+  el.setAttribute('aria-label', socNow === null ? 'Accu onbekend' : 'Accu ' + Math.round(socNow) + ' procent' + (goal ? ', doel ' + goal + ' procent' : ''));
+}
+
 function renderNext(){
   const d = nextDeparture();
-  const line = $('targetLine'), label = $('targetLabel');
-  line.hidden = label.hidden = !d;
-  if (!d) { $('next').textContent = 'Geen planning'; return; }
-  const day = d.offset === 0 ? 'Vandaag' : d.offset === 1 ? 'Morgen' : WEEKDAYS[d.i];
-  $('next').textContent = day + ' ' + d.time;
-  line.style.left = d.soc + '%';
-  label.textContent = 'Doel ' + d.soc + '%';
-  label.style.left = Math.max(9, Math.min(90, d.soc)) + '%';
+  const label = $('targetLabel');
+  label.hidden = !d;
+  if (!d) {
+    $('next').textContent = 'Geen planning';
+    $('nextCardWhen').textContent = 'Geen planning';
+    $('nextCardSoc').textContent = '—';
+  } else {
+    const day = d.offset === 0 ? 'Vandaag' : d.offset === 1 ? 'Morgen' : WEEKDAYS[d.i];
+    $('next').textContent = `${day} ${d.time}`;
+    $('nextCardWhen').textContent = `${day}, ${d.time}`;
+    $('nextCardSoc').textContent = d.soc + '%';
+    label.textContent = 'Doel ' + d.soc + '%';
+  }
+  renderBattery();
+}
+
+function planSlots(lp){
+  return (Array.isArray(lp?.plan) ? lp.plan : [])
+    .filter(p => p && Number.isFinite(Date.parse(p.start)) && Number.isFinite(Date.parse(p.end)) && Date.parse(p.end) > Date.parse(p.start))
+    .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
 }
 
 function renderHome(s, v){
   $('vehicleTitle').textContent = v?.title || loadpoint?.vehicleTitle || 'Je auto';
 
   const raw = loadpoint?.vehicleSoc ?? v?.soc ?? v?.vehicleSoc;
-  const soc = raw !== null && raw !== undefined && Number.isFinite(Number(raw)) ? Math.max(0, Math.min(100, Number(raw))) : null;
-  const charging = !!loadpoint?.charging;
-  const battery = $('battery');
-  document.querySelectorAll('.socValue').forEach(el => el.textContent = soc === null ? '—' : Math.round(soc));
-  battery.style.setProperty('--soc', (soc ?? 0) + '%');
-  battery.classList.toggle('charging', charging);
-  battery.classList.toggle('low', soc !== null && soc <= 15);
-  battery.setAttribute('aria-label', soc === null ? 'Accu onbekend' : 'Accu ' + Math.round(soc) + ' procent');
+  socNow = raw !== null && raw !== undefined && Number.isFinite(Number(raw)) ? Math.max(0, Math.min(100, Number(raw))) : null;
+  charging = !!loadpoint?.charging;
+  $('socValue').textContent = socNow === null ? '—' : Math.round(socNow);
+  renderBattery();
 
-  const status = $('status');
-  status.className = 'status' + (charging ? ' charging' : '');
-  status.innerHTML = charging ? BOLT : '';
-  const text = document.createElement('span');
-  text.textContent = charging ? 'Aan het laden' : loadpoint?.connected ? 'Aangesloten, laadt niet' : 'Niet aangesloten';
-  status.append(text);
+  const chip = $('chargeChip');
+  chip.className = 'chip' + (charging ? ' mint' : '');
+  chip.innerHTML = charging ? BOLT : '';
+  chip.append(charging ? 'Aan het laden' : loadpoint?.connected ? 'Aangesloten, laadt niet' : 'Niet aangesloten');
+
+  $('status').className = 'sub';
+  $('status').textContent = 'Bijgewerkt ' + fmtClock(lastUpdate);
+  $('conn').className = 'conn ok';
+
+  const slots = planSlots(loadpoint);
+  const finish = slots.length ? Date.parse(slots[slots.length - 1].end) : null;
+  $('finish').hidden = !finish;
+  if (finish) $('finishTime').textContent = fmtWhen(finish);
 
   $('power').textContent = isNum(loadpoint?.chargePower) ? (loadpoint.chargePower >= 100 ? number(loadpoint.chargePower/1000, 1) + ' kW' : '0 kW') : '—';
   const price = s.tariffGrid ?? s.gridPrice;
-  $('price').innerHTML = '';
-  if (isNum(price)) {
-    const unit = document.createElement('span');
-    unit.className = 'unit';
-    unit.textContent = ' per kWh';
-    $('price').append(fmtPrice(price), unit);
-  } else $('price').textContent = '—';
+  if (isNum(price)) setUnit($('price'), fmtPrice(price), ' /kWh');
+  else $('price').textContent = '—';
 
   renderMode(pendingMode ?? loadpoint?.mode);
   $('save').disabled = !(vehicle && dirty);
@@ -448,11 +590,7 @@ function renderHome(s, v){
 
 function renderMode(mode){
   const buttons = [...document.querySelectorAll('[data-mode]')];
-  const index = buttons.findIndex(b => b.dataset.mode === mode);
-  buttons.forEach((b, i) => { b.classList.toggle('active', i === index); b.setAttribute('aria-checked', i === index); });
-  const seg = $('segmented');
-  seg.style.setProperty('--i', Math.max(0, index));
-  seg.classList.toggle('none', index < 0);
+  buttons.forEach(b => { const on = b.dataset.mode === mode; b.classList.toggle('active', on); b.setAttribute('aria-checked', on); });
   $('modeNote').textContent = MODE_NOTES[mode] || '';
 }
 
@@ -465,10 +603,19 @@ function currents(lp){
 
 function renderEnergy(s){
   const powers = (s.loadpoints || []).map(lp => lp.chargePower);
-  const totalCharger = powers.every(isNum) ? powers.reduce((a, b) => a + b, 0) : null;
+  const totalCharger = powers.length && powers.every(isNum) ? powers.reduce((a, b) => a + b, 0) : null;
   const totalHouse = isNum(s.homePower) && totalCharger !== null ? s.homePower + totalCharger : null;
-  $('housePower').textContent = fmtPower(totalHouse);
+  const house = $('housePower');
+  if (totalHouse === null) house.textContent = '—';
+  else { const [v, u] = fmtPower(totalHouse).split(' '); setUnit(house, v + ' ', u); }
   $('chargerPower').textContent = fmtPower(totalCharger);
+  $('restPower').textContent = fmtPower(isNum(s.homePower) ? s.homePower : null);
+  const known = totalHouse !== null && totalHouse > 0;
+  $('split').hidden = !known;
+  if (known) {
+    $('splitCharger').style.flexGrow = Math.max(0, totalCharger);
+    $('splitRest').style.flexGrow = Math.max(0, s.homePower);
+  }
   $('energyNote').hidden = totalHouse !== null;
   $('energyNote').textContent = 'Totaal onbekend: evcc meldt niet voor elke laadpaal het vermogen.';
 
@@ -482,17 +629,15 @@ function renderEnergy(s){
     $('gridBar' + (i+1)).style.width = share + '%';
     $('gridTrack' + (i+1)).classList.toggle('high', share >= 90);
   }
-  const known = Array.isArray(grid) && grid.length >= 3 && grid.slice(0,3).every(Number.isFinite);
-  $('headroom').textContent = known ? fmtCurrent(limit - Math.max(...grid.slice(0,3).map(Math.abs))) : '—';
-  $('gridNote').textContent = `HomeWizard P1, limiet ${number(limit)} A per fase. Netto gemeten, dus teruglevering van zonnestroom verlaagt de waarde.`;
+  const gridKnown = Array.isArray(grid) && grid.length >= 3 && grid.slice(0,3).every(Number.isFinite);
+  const room = gridKnown ? limit - Math.max(...grid.slice(0,3).map(Math.abs)) : null;
+  $('headroom').textContent = 'Ruimte ' + fmtCurrent(room);
+  $('headroom').className = 'chip ' + (room === null ? '' : room < limit*0.1 ? 'warn' : 'mint');
+  $('gridNote').textContent = `HomeWizard P1, limiet ${number(limit)} A per fase. Netto gemeten: teruglevering van zonnestroom verlaagt de waarde.`;
 
   const c = currents(loadpoint);
   const configured = loadpoint?.maxCurrent, effective = loadpoint?.effectiveMaxCurrent;
-  const scale = isNum(configured) && configured > 0 ? configured : 16;
-  for (let i = 0; i < 3; i++) {
-    $('phase' + (i+1)).textContent = fmtCurrent(c[i]);
-    $('chargeBar' + (i+1)).style.width = isNum(c[i]) ? Math.min(100, Math.abs(c[i])/scale*100) + '%' : '0%';
-  }
+  for (let i = 0; i < 3; i++) $('phase' + (i+1)).textContent = fmtCurrent(c[i]);
   $('maxCurrent').textContent = isNum(configured) ? number(configured) + ' A' : '—';
   $('effectiveCurrent').textContent = isNum(effective) ? number(effective) + ' A' : '—';
 
@@ -504,7 +649,7 @@ function renderEnergy(s){
     label = warn ? 'Begrensd, oorzaak onbekend' : 'Geen begrenzing';
   }
   status.textContent = label;
-  status.className = 'side ' + (warn ? 'status-warn' : 'status-ok');
+  status.className = 'chip' + (warn ? ' warn' : '');
 }
 
 function mergeSlots(slots){
@@ -520,80 +665,87 @@ function mergeSlots(slots){
   return blocks;
 }
 
+function el(tag, className, text){
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
 function renderForecast(lp){
-  const slots = (Array.isArray(lp?.plan) ? lp.plan : [])
-    .filter(p => p && Number.isFinite(Date.parse(p.start)) && Number.isFinite(Date.parse(p.end)) && Date.parse(p.end) > Date.parse(p.start))
-    .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
-  const box = $('forecastChart');
+  const slots = planSlots(lp);
+  const box = $('forecastChart'), list = $('forecastBlocks');
   box.replaceChildren();
-  $('forecastStatus').textContent = lp?.planActive ? 'Plan actief' : 'Alleen prognose';
+  list.replaceChildren();
+  const status = $('forecastStatus');
+  status.textContent = lp?.planActive ? 'Plan actief' : 'Alleen prognose';
+  status.className = 'chip' + (lp?.planActive ? ' mint' : '');
   const departure = lp?.effectivePlanTime || lp?.planTime;
-  $('forecastTime').textContent = departure ? fmtDayTime(departure) : 'Geen vertrek bekend';
+  const dep = Date.parse(departure);
   $('forecastSoc').textContent = isNum(lp?.effectivePlanSoc) ? lp.effectivePlanSoc + '%' : '—';
 
   if (!slots.length) {
-    const empty = document.createElement('div');
-    empty.className = 'empty';
-    empty.textContent = 'evcc heeft nog geen laadmomenten berekend.';
-    box.append(empty);
+    $('forecastFinish').textContent = '—';
+    $('forecastPrice').textContent = '—';
+    box.append(el('div', 'empty', 'evcc heeft nog geen laadmomenten berekend.' + (Number.isFinite(dep) ? ' Vertrek: ' + fmtDayTime(dep) + '.' : '')));
     $('forecastNote').textContent = '';
     return;
   }
 
+  const blocks = mergeSlots(slots);
+  const priced = blocks.reduce((n, b) => n + b.priced, 0);
+  const cost = blocks.reduce((n, b) => n + b.cost, 0);
+  $('forecastFinish').textContent = fmtWhen(Date.parse(slots[slots.length - 1].end));
+  $('forecastPrice').textContent = priced ? fmtPrice(cost/priced) : '—';
+
   const hour = 3600000;
   const first = Date.parse(slots[0].start);
-  const last = Math.max(Date.parse(slots[slots.length-1].end), Date.parse(departure) || 0);
+  const last = Math.max(Date.parse(slots[slots.length-1].end), dep || 0);
   const min = Math.floor(first/hour)*hour, max = Math.ceil((last + hour/2)/hour)*hour, span = max - min;
   const prices = slots.map(p => p.value).filter(isNum);
   const top = prices.length ? Math.max(...prices) : 0;
+  const pos = t => (t - min)/span*100;
+  const heightOf = p => isNum(p.value) && top > 0 ? Math.max(10, p.value/top*72) : 72;
 
-  const wrap = document.createElement('div');
-  wrap.className = 'chart-wrap';
-  const head = document.createElement('div');
-  head.className = 'chart-top';
   const mins = slots.reduce((n, p) => n + (Date.parse(p.end) - Date.parse(p.start))/60000, 0);
-  const left = document.createElement('span'); left.textContent = fmtDuration(mins) + ' laden gepland';
-  const right = document.createElement('span'); right.className = 'num'; right.textContent = prices.length ? 'tot ' + fmtPrice(top) + ' per kWh' : '';
-  head.append(left, right);
-
-  const chart = document.createElement('div');
-  chart.className = 'chart';
+  const chart = el('div', 'chart');
   chart.setAttribute('role', 'img');
-  chart.setAttribute('aria-label', 'Geplande laadmomenten met stroomprijs, staan hieronder ook als lijst');
+  chart.setAttribute('aria-label', fmtDuration(mins) + ' laden gepland, met stroomprijs. De momenten staan hieronder ook als lijst.');
   for (const p of slots) {
-    const bar = document.createElement('div');
-    bar.className = 'slot';
-    bar.style.left = (Date.parse(p.start) - min)/span*100 + '%';
+    const bar = el('div', 'slot');
+    bar.style.left = pos(Date.parse(p.start)) + '%';
     bar.style.width = (Date.parse(p.end) - Date.parse(p.start))/span*100 + '%';
-    bar.style.height = isNum(p.value) && top > 0 ? Math.max(8, p.value/top*100) + '%' : '100%';
+    bar.style.height = heightOf(p) + '%';
     chart.append(bar);
   }
-  const dep = Date.parse(departure);
+  if (prices.length) {
+    const cheapest = slots.reduce((a, b) => isNum(b.value) && (!isNum(a.value) || b.value < a.value) ? b : a);
+    const pin = el('span', 'price-pin', fmtPrice(cheapest.value));
+    const mid = (Date.parse(cheapest.start) + Date.parse(cheapest.end))/2;
+    pin.style.left = Math.max(10, Math.min(90, pos(mid))) + '%';
+    pin.style.bottom = `calc(${heightOf(cheapest)}% + 8px)`;
+    chart.append(pin);
+  }
   if (Number.isFinite(dep) && dep >= min && dep <= max) {
-    const line = document.createElement('div');
-    line.className = 'dep';
-    line.style.left = (dep - min)/span*100 + '%';
-    chart.append(line);
+    const line = el('div', 'dep');
+    line.style.left = pos(dep) + '%';
+    const label = el('span', 'dep-label', 'Vertrek ' + fmtClock(dep));
+    label.style.left = Math.max(14, Math.min(86, pos(dep))) + '%';
+    chart.append(line, label);
   }
-  const axis = document.createElement('div');
-  axis.className = 'axis num';
-  for (const t of [min, max]) { const el = document.createElement('span'); el.textContent = fmtShort(t); axis.append(el); }
-  wrap.append(head, chart, axis);
-  box.append(wrap);
+  const axis = el('div', 'axis');
+  for (const t of [min, min + span/2, max]) axis.append(el('span', '', fmtClock(Math.round(t/60000)*60000)));
+  box.append(chart, axis);
 
-  for (const block of mergeSlots(slots)) {
-    const row = document.createElement('div');
-    row.className = 'row';
-    const when = document.createElement('span');
-    when.className = 'num';
-    when.textContent = fmtShort(block.start) + ' tot ' + fmtClock(block.end);
-    const cost = document.createElement('span');
-    cost.className = 'value num';
-    cost.textContent = block.priced ? (block.mixed ? 'gem. ' : '') + fmtPrice(block.cost/block.priced) : '';
-    row.append(when, cost);
-    box.append(row);
+  for (const block of blocks) {
+    const row = el('div', 'block');
+    row.append(
+      el('span', '', fmtShort(block.start) + ' tot ' + fmtClock(block.end)),
+      el('span', '', block.priced ? (block.mixed ? 'gem. ' : '') + fmtPrice(block.cost/block.priced) : '')
+    );
+    list.append(row);
   }
-  $('forecastNote').textContent = (lp?.planActive ? 'Plan is actief; de tijden kunnen nog verschuiven.' : 'Berekende momenten: er is nog geen plan actief.') + ' De stippellijn is je vertrektijd.';
+  $('forecastNote').textContent = (lp?.planActive ? 'Plan is actief; de tijden kunnen nog verschuiven.' : 'Berekende momenten: er is nog geen plan actief, de auto laadt niet per se nu.') + ' De stippellijn is je vertrektijd.';
 }
 
 async function refresh(){
@@ -609,26 +761,24 @@ async function refresh(){
     if (!dirty) readPlans(v);
   } catch (e) {
     const status = $('status');
-    status.className = 'status bad';
+    status.className = 'sub bad';
     status.textContent = lastUpdate ? 'Geen verbinding, stand van ' + fmtClock(lastUpdate) : 'Geen verbinding met evcc';
+    $('conn').className = 'conn bad';
     if (!initialized) toast('Kan evcc niet bereiken. Controleer de instellingen van de app.', true);
   }
 }
 
 /* Planning */
 const dayRows = WEEKDAYS.map((name, i) => {
-  const row = document.createElement('div');
-  row.className = 'day';
-  const main = document.createElement('button');
-  main.className = 'day-main';
-  main.innerHTML = '<span class="day-name"></span><span class="day-time num"></span><span class="day-soc num"></span>';
-  main.firstChild.textContent = name;
+  const row = el('div', 'day');
+  const main = el('button', 'day-main');
+  main.innerHTML = `<span class="day-name"><b></b><small></small></span><span class="pill">${CLOCK}<span></span></span><span class="pill pct"></span>`;
+  main.querySelector('b').textContent = name;
   main.onclick = () => {
     if (!days[i].on) { days[i].on = true; check.checked = true; change(i); }
     openSheet(i);
   };
-  const toggle = document.createElement('label');
-  toggle.className = 'day-switch';
+  const toggle = el('label', 'day-switch');
   const check = document.createElement('input');
   check.type = 'checkbox';
   check.setAttribute('switch', '');
@@ -637,15 +787,17 @@ const dayRows = WEEKDAYS.map((name, i) => {
   toggle.append(check);
   row.append(main, toggle);
   $('days').append(row);
-  return {row, check, time:main.children[1], soc:main.children[2], main};
+  return {row, check, main, sub:main.querySelector('small'), time:main.querySelector('.pill span'), soc:main.querySelector('.pill.pct')};
 });
 
 function updateDay(i){
   const d = days[i], r = dayRows[i];
   r.row.classList.toggle('off', !d.on);
   r.check.checked = d.on;
-  r.time.textContent = d.on ? d.time : '';
-  r.soc.textContent = d.on ? d.soc + '%' : '';
+  r.sub.textContent = d.on ? '' : 'Niet nodig';
+  r.sub.hidden = d.on;
+  r.time.textContent = d.time;
+  r.soc.textContent = d.soc + '%';
   r.main.setAttribute('aria-label', WEEKDAYS[i] + (d.on ? `, klaar om ${d.time}, laden tot ${d.soc} procent` : ', uit'));
 }
 
@@ -677,17 +829,15 @@ $('save').onclick = async () => {
 /* Keuzewielen in eigen sheet: de iOS-tijdkiezer toont knoppen in de taal van het toestel. */
 const ITEM = 36;
 function makeWheel(values, label){
-  const el = document.createElement('div');
-  el.className = 'wheel';
-  el.tabIndex = 0;
-  el.setAttribute('aria-label', label);
+  const wheel = el('div', 'wheel');
+  wheel.tabIndex = 0;
+  wheel.setAttribute('aria-label', label);
   values.forEach((value, index) => {
-    const item = document.createElement('div');
-    item.textContent = value;
-    item.onclick = () => el.scrollTo({top:index*ITEM, behavior:'smooth'});
-    el.append(item);
+    const item = el('div', '', value);
+    item.onclick = () => wheel.scrollTo({top:index*ITEM, behavior:'smooth'});
+    wheel.append(item);
   });
-  return {el, values, get value(){ return values[Math.max(0, Math.min(values.length-1, Math.round(el.scrollTop/ITEM)))]; }, set(v){ el.scrollTop = Math.max(0, values.indexOf(v))*ITEM; }};
+  return {el:wheel, values, get value(){ return values[Math.max(0, Math.min(values.length-1, Math.round(wheel.scrollTop/ITEM)))]; }, set(v){ wheel.scrollTop = Math.max(0, values.indexOf(v))*ITEM; }};
 }
 const pad = n => String(n).padStart(2, '0');
 const hourWheel = makeWheel(Array.from({length:24}, (_, n) => pad(n)), 'Uur');
@@ -744,7 +894,7 @@ function showTab(name){
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => showTab(b.dataset.tab));
 $('nextRow').onclick = () => showTab('planning');
 
-/* Laadmodus: wijzigt direct, zoals een iOS-schakelaar; bij een fout springt hij terug. */
+/* Laadmodus: wijzigt direct; bij een fout springt hij terug. */
 document.querySelectorAll('[data-mode]').forEach(b => b.onclick = async () => {
   const mode = b.dataset.mode;
   if (!loadpoint) { toast('Geen laadpunt gevonden', true); return; }
