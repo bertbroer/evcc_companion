@@ -970,8 +970,9 @@ function renderSessions(list){
   }
   for (const g of groups) {
     const kwh = g.items.map(x => x.chargedEnergy).filter(isNum).reduce((a, b) => a + b, 0);
+    const costs = g.items.map(sessionCost).filter(isNum);
     const head = el('div', 'month');
-    head.append(el('h2', 'h2', fmtMonth(g.start)), el('span', '', fmtKwh(kwh)));
+    head.append(el('h2', 'h2', fmtMonth(g.start)), el('span', '', fmtKwh(kwh) + (costs.length ? ' · ' + fmtEuro(costs.reduce((a, b) => a + b, 0)) : '')));
     const card = el('div', 'card sessions');
     for (const x of g.items) {
       const row = el('div', 'session');
