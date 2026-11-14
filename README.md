@@ -1,4 +1,4 @@
-# EVCC Companion v0.10 — Home Assistant custom app
+# EVCC Companion v0.11 — Home Assistant custom app
 
 A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day recurring planner.
 
@@ -6,7 +6,7 @@ A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day
 
 1. Extract the ZIP and copy its contents into your public GitHub repository, keeping `repository.yaml` in the root and the `evcc_companion` folder intact. Commit the changes.
 2. Home Assistant → Settings → Apps → App Store → ⋮ → Check for updates / Reload.
-3. Open EVCC Companion and update to **0.10.0**. If necessary restart it.
+3. Open EVCC Companion and update to **0.11.0**. If necessary restart it.
 4. Remove the old `companion_password` setting if it remains in the app's saved configuration. Version 0.3 does not use a login.
 5. In the app's **Network** section, map `8099/tcp` to host port `8099` and restart. Visit `http://<HOME_ASSISTANT_LAN_IP>:8099/` while on your home Wi-Fi.
 
@@ -61,3 +61,7 @@ v0.9 also fixes the car image from v0.8.1 not loading: the server did not serve 
 - The Plus Jakarta Sans font is bundled in `www/fonts` (SIL Open Font License, `fonts/OFL.txt`): no request to Google, and it works offline.
 - `repository.yaml` points to this repository.
 - For local testing, `EVCC_COMPANION_OPTIONS`, `EVCC_COMPANION_WWW` and `EVCC_COMPANION_PORT` override the options file, web folder and port.
+
+## v0.11: guest vehicles
+
+When a car is connected but evcc has not matched it to a configured vehicle (`connected: true` with an empty `vehicleName`), the Laden tab no longer falls back to your own car's data. While `vehicleDetectionActive` is true it shows *Auto herkennen…*; otherwise it shows *Andere auto*, without the car image, charge level, target or finish time, and instead the current session's energy (`sessionEnergy`, Wh) and price (`sessionPrice`). Charging power, price, mode and the weekly plan (which belongs to your own car) are unchanged.

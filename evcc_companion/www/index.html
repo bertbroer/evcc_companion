@@ -114,6 +114,12 @@ h1{font:800 28px/34px var(--font);letter-spacing:-.02em;margin:0;white-space:now
 .soc{display:flex;align-items:baseline;gap:2px;line-height:1;font-size:clamp(52px,8.6vh,72px);font-weight:800;letter-spacing:-.04em}
 .soc small{font-size:.4em;font-weight:700;color:var(--muted);letter-spacing:0}
 .finish{display:flex;align-items:baseline;gap:6px}
+/* Onbekende auto (gast) of herkenning bezig: geen Volvo-gegevens tonen. */
+.guest-info{display:none;flex-direction:column;gap:2px;padding:4px 0 2px}
+.guest-info b{font-size:34px;line-height:40px;font-weight:800;letter-spacing:-.02em}
+.guest-sub{font-size:14px;line-height:20px;color:var(--muted);font-weight:600}
+.hero.unknown .guest-info{display:flex}
+.hero.unknown :is(.soc,.car,.segments,.goal,.finish){display:none!important}
 .finish .lbl{display:inline}
 .finish b{font-size:17px;line-height:22px;font-weight:800}
 .segments{display:flex;gap:3px}
@@ -321,6 +327,7 @@ html:not(.ready) *{transition:none!important}
       <div class="hero-left">
         <div class="soc" aria-hidden="true"><span id="socValue">—</span><small>%</small></div>
         <div class="finish" id="finish" hidden><span class="lbl">Klaar om</span><b id="finishTime"></b></div>
+        <div class="guest-info" id="guestInfo"><span class="lbl" id="guestLabel">Deze laadsessie</span><b id="guestEnergy">—</b><span class="guest-sub" id="guestSub"></span></div>
       </div>
       <img class="car" src="car.png" alt="" width="666" height="375" decoding="async">
     </div>
@@ -486,7 +493,7 @@ const CLOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="1
 
 let state = null, vehicle = null, loadpoint = null, timezone = 'Europe/Amsterdam';
 let dirty = false, initialized = false, pendingMode = null, lastUpdate = null;
-let socNow = null, charging = false;
+let socNow = null, charging = false, unknownCar = false;
 let days = WEEKDAYS.map(() => ({on:false, time:'07:30', soc:80}));
 
 if (!('switch' in HTMLInputElement.prototype)) document.documentElement.classList.add('no-native-switch');
@@ -617,7 +624,7 @@ function upcoming(){
 function renderNext(){
   const d = upcoming();
   const label = $('targetLabel');
-  label.hidden = !d;
+  label.hidden = !d || unknownCar;
   $('next').textContent = d ? d.label : 'Geen planning';
   if (d) label.textContent = 'Doel ' + d.soc + '%';
   renderBattery();
@@ -647,18 +654,36 @@ function planSlots(lp){
 }
 
 function renderHome(s, v){
-  $('vehicleTitle').textContent = v?.title || loadpoint?.vehicleTitle || 'Je auto';
-
-  const raw = loadpoint?.vehicleSoc ?? v?.soc ?? v?.vehicleSoc;
-  socNow = raw !== null && raw !== undefined && Number.isFinite(Number(raw)) ? Math.max(0, Math.min(100, Number(raw))) : null;
+  /* Aangesloten zonder voertuignaam: evcc herkent de auto (nog) niet. Dan is het een gast,
+     of loopt de herkenning nog. In beide gevallen tonen we geen gegevens van je eigen auto. */
+  const connected = !!loadpoint?.connected;
+  const detecting = connected && !loadpoint?.vehicleName && !!loadpoint?.vehicleDetectionActive;
+  const guest = connected && !loadpoint?.vehicleName && !detecting;
+  unknownCar = guest || detecting;
   charging = !!loadpoint?.charging;
+  $('vehicleTitle').textContent = guest ? 'Andere auto' : detecting ? 'Auto herkennen' : v?.title || loadpoint?.vehicleTitle || 'Je auto';
+
+  const raw = unknownCar ? null : loadpoint?.vehicleSoc ?? v?.soc ?? v?.vehicleSoc;
+  socNow = raw !== null && raw !== undefined && Number.isFinite(Number(raw)) ? Math.max(0, Math.min(100, Number(raw))) : null;
   $('socValue').textContent = socNow === null ? '—' : Math.round(socNow);
+  $('battery').closest('.hero').classList.toggle('unknown', unknownCar);
   renderBattery();
+  renderNext();
+
+  if (unknownCar) {
+    const energy = isNum(loadpoint?.sessionEnergy) ? loadpoint.sessionEnergy/1000 : null;
+    const cost = loadpoint?.sessionPrice;
+    $('guestLabel').textContent = detecting ? 'Even geduld' : 'Deze laadsessie';
+    $('guestEnergy').hidden = detecting;
+    $('guestEnergy').textContent = energy === null ? '—' : number(energy, 1) + ' kWh';
+    $('guestSub').textContent = detecting ? 'evcc zoekt uit welke auto er aan de lader hangt.' : isNum(cost) ? fmtEuro(cost) + ' · laadpercentage onbekend' : 'Laadpercentage onbekend';
+  }
 
   const chip = $('chargeChip');
-  chip.className = 'chip' + (charging ? ' mint' : '');
-  chip.innerHTML = charging ? BOLT : '';
-  chip.append(charging ? 'Aan het laden' : loadpoint?.connected ? 'Aangesloten, laadt niet' : 'Niet aangesloten');
+  const bolt = charging && !detecting;
+  chip.className = 'chip' + (bolt ? ' mint' : '');
+  chip.innerHTML = bolt ? BOLT : '';
+  chip.append(detecting ? 'Auto herkennen…' : guest ? (charging ? 'Andere auto laadt' : 'Andere auto aangesloten') : charging ? 'Aan het laden' : connected ? 'Aangesloten, laadt niet' : 'Niet aangesloten');
 
   $('status').className = 'sub';
   $('status').textContent = 'Bijgewerkt ' + fmtClock(lastUpdate);
@@ -666,7 +691,7 @@ function renderHome(s, v){
 
   const slots = planSlots(loadpoint);
   const finish = slots.length ? Date.parse(slots[slots.length - 1].end) : null;
-  $('finish').hidden = !finish;
+  $('finish').hidden = !finish || unknownCar;
   if (finish) $('finishTime').textContent = fmtWhen(finish);
 
   $('power').textContent = isNum(loadpoint?.chargePower) ? (loadpoint.chargePower >= 100 ? number(loadpoint.chargePower/1000, 1) + ' kW' : '0 kW') : '—';
