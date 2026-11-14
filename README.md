@@ -1,4 +1,4 @@
-# EVCC Companion v0.8 — Home Assistant custom app
+# EVCC Companion v0.9 — Home Assistant custom app
 
 A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day recurring planner.
 
@@ -6,7 +6,7 @@ A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day
 
 1. Extract the ZIP and copy its contents into your public GitHub repository, keeping `repository.yaml` in the root and the `evcc_companion` folder intact. Commit the changes.
 2. Home Assistant → Settings → Apps → App Store → ⋮ → Check for updates / Reload.
-3. Open EVCC Companion and update to **0.8.1**. If necessary restart it.
+3. Open EVCC Companion and update to **0.9.0**. If necessary restart it.
 4. Remove the old `companion_password` setting if it remains in the app's saved configuration. Version 0.3 does not use a login.
 5. In the app's **Network** section, map `8099/tcp` to host port `8099` and restart. Visit `http://<HOME_ASSISTANT_LAN_IP>:8099/` while on your home Wi-Fi.
 
@@ -47,3 +47,9 @@ New, more modern look: light bento tiles on a soft grey-green background, one mi
 - The tab bar is a dark floating pill; the active tab shows its label.
 
 No change to evcc API operations.
+
+## v0.9: Historie
+
+A fourth tab, **Historie**, lists evcc's charging sessions (`GET /api/sessions`), newest first and grouped by month. Each row shows date and start–end time, energy charged (`chargedEnergy`, kWh) and total price (`price`, or `pricePerKWh × chargedEnergy` when `price` is missing). A session without an end time is shown as *bezig*. The card at the top totals kWh, cost and number of sessions for the current month. The proxy allowlist now also permits `GET sessions` (read-only).
+
+v0.9 also fixes the car image from v0.8.1 not loading: the server did not serve `car.png`.

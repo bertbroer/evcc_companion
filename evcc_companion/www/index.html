@@ -218,6 +218,23 @@ input[type=checkbox]{margin:0;accent-color:var(--mint);width:51px;height:31px}
 .kv{display:flex;justify-content:space-between;gap:12px;font-size:14px;font-weight:600}
 .kv span:first-child{color:var(--muted)}
 
+/* Historie */
+.h-sum{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1.2fr) minmax(0,.75fr);gap:10px}
+.h-sum b{display:block;font-size:20px;line-height:26px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.month{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:10px}
+.month .h2{margin:0}
+.month span{font-size:13px;font-weight:600;color:var(--muted)}
+.sessions{padding:2px 16px}
+.session{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 0}
+.session+.session{border-top:1px solid var(--line)}
+.session .when{min-width:0;display:flex;flex-direction:column}
+.session .when b{font-size:16px;line-height:21px;font-weight:700}
+.session .when small,.session .amount small{font-size:13px;line-height:18px;color:var(--muted);font-weight:600}
+.session .amount{flex:none;display:flex;flex-direction:column;align-items:flex-end}
+.session .amount b{font-size:16px;line-height:21px;font-weight:800}
+.session .live{color:var(--mint-ink)}
+.h-empty{padding:18px 0;color:var(--muted);font-size:14px}
+
 /* Sheet en alert */
 .scrim{position:fixed;inset:0;z-index:30;background:var(--scrim);opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
 .scrim.open{opacity:1;visibility:visible}
@@ -390,10 +407,25 @@ html:not(.ready) *{transition:none!important}
   </section>
 </main>
 
+<main id="history" class="screen" role="tabpanel" aria-labelledby="tab-history" hidden>
+  <header class="top"><h1>Historie</h1></header>
+  <section class="card card-pad" aria-label="Deze maand">
+    <span class="lbl" id="sumLabel">Deze maand</span>
+    <div class="h-sum">
+      <div><span class="lbl">Geladen</span><b id="sumEnergy">—</b></div>
+      <div><span class="lbl">Kosten</span><b id="sumCost">—</b></div>
+      <div><span class="lbl">Sessies</span><b id="sumCount">—</b></div>
+    </div>
+  </section>
+  <div id="sessionList"></div>
+  <p class="note" id="historyNote">Laadsessies zoals evcc ze bijhoudt. Kosten volgens het tarief in evcc.</p>
+</main>
+
 <nav class="tabbar" role="tablist" aria-label="Schermen">
   <button class="tab" id="tab-home" role="tab" data-tab="home" aria-selected="true" aria-label="Laden"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.6 2.2c.3-.5 1-.2.9.3L13.2 10h5.2c.5 0 .8.6.5 1l-8.5 10.8c-.4.5-1.1.1-1-.4l1.4-7.9H5.6c-.5 0-.8-.6-.5-1z"/></svg><span aria-hidden="true">Laden</span></button>
   <button class="tab" id="tab-planning" role="tab" data-tab="planning" aria-selected="false" aria-label="Planning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span aria-hidden="true">Planning</span></button>
   <button class="tab" id="tab-energy" role="tab" data-tab="energy" aria-selected="false" aria-label="Energie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 20v-6M12 20V10M19 20V4"/></svg><span aria-hidden="true">Energie</span></button>
+  <button class="tab" id="tab-history" role="tab" data-tab="history" aria-selected="false" aria-label="Historie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4.5H8M12 7.5V12l3 2"/></svg><span aria-hidden="true">Historie</span></button>
 </nav>
 
 <div class="scrim" id="scrim"></div>
@@ -899,8 +931,81 @@ document.addEventListener('keydown', e => {
   else if (editing !== null) closeSheet();
 });
 
+/* Historie: laadsessies uit evcc, nieuwste eerst, per maand gegroepeerd. */
+let sessionsLoaded = 0;
+const monthKey = t => dateFormat({year:'numeric', month:'2-digit'}).format(new Date(t));
+const fmtMonth = t => { const m = dateFormat({month:'long', year:'numeric'}).format(new Date(t)); return m.charAt(0).toUpperCase() + m.slice(1); };
+const fmtDate = t => { const parts = dateFormat({weekday:'short', day:'numeric', month:'short'}).formatToParts(new Date(t)); const get = type => parts.find(p => p.type === type)?.value; return `${get('weekday')} ${get('day')} ${get('month')}`; };
+const fmtKwh = v => isNum(v) ? number(v, 1) + ' kWh' : '—';
+const fmtEuro = v => isNum(v) ? '€ ' + number(v, 2) : '—';
+const validTime = t => { const ms = Date.parse(t); return Number.isFinite(ms) && ms > 0 ? ms : null; };
+const sessionCost = x => isNum(x.price) ? x.price : isNum(x.pricePerKWh) && isNum(x.chargedEnergy) ? x.pricePerKWh*x.chargedEnergy : null;
+
+async function loadSessions(force = false){
+  if (!force && Date.now() - sessionsLoaded < 60000) return;
+  try {
+    const raw = await api('sessions');
+    const list = Array.isArray(raw) ? raw : Array.isArray(raw?.result) ? raw.result : [];
+    sessionsLoaded = Date.now();
+    renderSessions(list);
+  } catch (e) {
+    if (!sessionsLoaded) { $('sessionList').replaceChildren(el('p', 'note', 'Kan de laadsessies niet ophalen: ' + e.message)); }
+  }
+}
+
+function renderSessions(list){
+  const sessions = list
+    .map(x => ({...x, start:validTime(x.created), end:validTime(x.finished)}))
+    .filter(x => x.start)
+    .sort((a, b) => b.start - a.start);
+  const box = $('sessionList');
+  box.replaceChildren();
+
+  const now = monthKey(Date.now());
+  const month = sessions.filter(x => monthKey(x.start) === now);
+  const energy = month.map(x => x.chargedEnergy).filter(isNum);
+  const costs = month.map(sessionCost).filter(isNum);
+  $('sumLabel').textContent = 'Deze maand · ' + fmtMonth(Date.now()).toLowerCase();
+  $('sumEnergy').textContent = energy.length ? fmtKwh(energy.reduce((a, b) => a + b, 0)) : '—';
+  $('sumCost').textContent = costs.length ? fmtEuro(costs.reduce((a, b) => a + b, 0)) : '—';
+  $('sumCount').textContent = number(month.length);
+
+  if (!sessions.length) {
+    const card = el('div', 'card sessions');
+    card.append(el('p', 'h-empty', 'Nog geen laadsessies in evcc.'));
+    box.append(card);
+    return;
+  }
+
+  const groups = [];
+  for (const x of sessions.slice(0, 200)) {
+    const key = monthKey(x.start);
+    if (groups[groups.length - 1]?.key !== key) groups.push({key, start:x.start, items:[]});
+    groups[groups.length - 1].items.push(x);
+  }
+  for (const g of groups) {
+    const kwh = g.items.map(x => x.chargedEnergy).filter(isNum).reduce((a, b) => a + b, 0);
+    const head = el('div', 'month');
+    head.append(el('h2', 'h2', fmtMonth(g.start)), el('span', '', fmtKwh(kwh)));
+    const card = el('div', 'card sessions');
+    for (const x of g.items) {
+      const row = el('div', 'session');
+      const when = el('div', 'when');
+      const times = el('small', x.end ? '' : 'live', x.end ? fmtClock(x.start) + ' – ' + fmtClock(x.end) : fmtClock(x.start) + ' · bezig');
+      when.append(el('b', '', fmtDate(x.start)), times);
+      const amount = el('div', 'amount');
+      amount.append(el('b', '', fmtKwh(x.chargedEnergy)), el('small', '', fmtEuro(sessionCost(x))));
+      row.append(when, amount);
+      row.setAttribute('aria-label', `${fmtDate(x.start)} ${times.textContent}, ${fmtKwh(x.chargedEnergy)}, ${fmtEuro(sessionCost(x))}`);
+      card.append(row);
+    }
+    box.append(head, card);
+  }
+}
+
 /* Navigatie */
 function showTab(name){
+  if (name === 'history') loadSessions();
   for (const tab of document.querySelectorAll('[data-tab]')) {
     tab.setAttribute('aria-selected', tab.dataset.tab === name);
     $(tab.dataset.tab).hidden = tab.dataset.tab !== name;

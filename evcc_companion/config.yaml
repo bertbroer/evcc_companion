@@ -1,5 +1,5 @@
 name: EVCC Companion
-version: "0.8.1"
+version: "0.9.0"
 slug: evcc_companion
 description: Minimal evcc dashboard and weekly recurring charging planner
 arch:

@@ -3,7 +3,7 @@ from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlsplit
 
 OPTIONS='/data/options.json'
-ASSETS={'/manifest.webmanifest':'application/manifest+json','/icon.svg':'image/svg+xml','/apple-touch-icon.png':'image/png'}
+ASSETS={'/manifest.webmanifest':'application/manifest+json','/icon.svg':'image/svg+xml','/apple-touch-icon.png':'image/png','/car.png':'image/png'}
 def settings():
     try:
         with open(OPTIONS) as f: return json.load(f)
@@ -34,7 +34,7 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(404,{'error':'Not found'}); return
         endpoint=path[len('/proxy/'):]
         # Strict allowlist: never expose arbitrary evcc endpoints or URLs.
-        allowed=(method=='GET' and endpoint=='state') or (method=='POST' and (
+        allowed=(method=='GET' and endpoint in ('state','sessions')) or (method=='POST' and (
             re.fullmatch(r'loadpoints/[1-9][0-9]*/mode/(off|smart|now)',endpoint) or
             re.fullmatch(r'vehicles/[A-Za-z0-9_.:-]+/plan/repeating',endpoint)))
         if not allowed:
