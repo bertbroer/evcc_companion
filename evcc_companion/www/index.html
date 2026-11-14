@@ -114,12 +114,13 @@ h1{font:800 28px/34px var(--font);letter-spacing:-.02em;margin:0;white-space:now
 .soc{display:flex;align-items:baseline;gap:2px;line-height:1;font-size:clamp(52px,8.6vh,72px);font-weight:800;letter-spacing:-.04em}
 .soc small{font-size:.4em;font-weight:700;color:var(--muted);letter-spacing:0}
 .finish{display:flex;align-items:baseline;gap:6px}
+.range{font-size:14px;line-height:20px;font-weight:700;color:var(--muted);margin-top:-2px}
 /* Onbekende auto (gast) of herkenning bezig: geen Volvo-gegevens tonen. */
 .guest-info{display:none;flex-direction:column;gap:2px;padding:4px 0 2px}
 .guest-info b{font-size:34px;line-height:40px;font-weight:800;letter-spacing:-.02em}
 .guest-sub{font-size:14px;line-height:20px;color:var(--muted);font-weight:600}
 .hero.unknown .guest-info{display:flex}
-.hero.unknown :is(.soc,.car,.segments,.goal,.finish){display:none!important}
+.hero.unknown :is(.soc,.car,.segments,.goal,.finish,.range){display:none!important}
 .finish .lbl{display:inline}
 .finish b{font-size:17px;line-height:22px;font-weight:800}
 .segments{display:flex;gap:3px}
@@ -326,6 +327,7 @@ html:not(.ready) *{transition:none!important}
     <div class="hero-mid">
       <div class="hero-left">
         <div class="soc" aria-hidden="true"><span id="socValue">—</span><small>%</small></div>
+        <div class="range" id="range" hidden></div>
         <div class="finish" id="finish" hidden><span class="lbl">Klaar om</span><b id="finishTime"></b></div>
         <div class="guest-info" id="guestInfo"><span class="lbl" id="guestLabel">Deze laadsessie</span><b id="guestEnergy">—</b><span class="guest-sub" id="guestSub"></span></div>
       </div>
@@ -493,7 +495,7 @@ const CLOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="1
 
 let state = null, vehicle = null, loadpoint = null, timezone = 'Europe/Amsterdam';
 let dirty = false, initialized = false, pendingMode = null, lastUpdate = null;
-let socNow = null, charging = false, unknownCar = false;
+let socNow = null, charging = false, unknownCar = false, limitSoc = null;
 let days = WEEKDAYS.map(() => ({on:false, time:'07:30', soc:80}));
 
 if (!('switch' in HTMLInputElement.prototype)) document.documentElement.classList.add('no-native-switch');
@@ -597,7 +599,7 @@ const segments = Array.from({length:SEG_COUNT}, () => {
   return seg;
 });
 function renderBattery(){
-  const goal = upcoming()?.soc ?? null;
+  const goal = limitSoc;
   const tip = socNow === null ? -1 : Math.min(SEG_COUNT - 1, Math.floor(Math.max(0, socNow - 0.01)/SEG_STEP));
   segments.forEach((seg, i) => {
     const fill = socNow === null ? 0 : Math.max(0, Math.min(SEG_STEP, socNow - i*SEG_STEP))/SEG_STEP*100;
@@ -608,7 +610,7 @@ function renderBattery(){
   const el = $('battery');
   el.classList.toggle('charging', charging);
   el.classList.toggle('low', socNow !== null && socNow <= 15);
-  el.setAttribute('aria-label', socNow === null ? 'Accu onbekend' : 'Accu ' + Math.round(socNow) + ' procent' + (goal ? ', doel ' + goal + ' procent' : ''));
+  el.setAttribute('aria-label', socNow === null ? 'Accu onbekend' : 'Accu ' + Math.round(socNow) + ' procent' + (goal ? ', laadlimiet ' + goal + ' procent' : ''));
 }
 
 /* Eerstvolgende vertrek: weekschema of eenmalig, wat het eerst komt. */
@@ -623,10 +625,7 @@ function upcoming(){
 
 function renderNext(){
   const d = upcoming();
-  const label = $('targetLabel');
-  label.hidden = !d || unknownCar;
   $('next').textContent = d ? d.label : 'Geen planning';
-  if (d) label.textContent = 'Doel ' + d.soc + '%';
   renderBattery();
 }
 
@@ -666,6 +665,15 @@ function renderHome(s, v){
   const raw = unknownCar ? null : loadpoint?.vehicleSoc ?? v?.soc ?? v?.vehicleSoc;
   socNow = raw !== null && raw !== undefined && Number.isFinite(Number(raw)) ? Math.max(0, Math.min(100, Number(raw))) : null;
   $('socValue').textContent = socNow === null ? '—' : Math.round(socNow);
+
+  /* Laadlimiet van de auto (vehicleLimitSoc) rechtsboven en gestippeld in de meter; actieradius onder het percentage. */
+  const limit = unknownCar ? null : loadpoint?.vehicleLimitSoc;
+  limitSoc = isNum(limit) && limit > 0 && limit <= 100 ? limit : null;
+  $('targetLabel').hidden = limitSoc === null;
+  $('targetLabel').textContent = limitSoc === null ? '' : 'Limiet ' + Math.round(limitSoc) + '%';
+  const range = unknownCar ? null : loadpoint?.vehicleRange;
+  $('range').hidden = !(isNum(range) && range > 0);
+  $('range').textContent = isNum(range) ? '≈ ' + number(Math.round(range)) + ' km' : '';
   $('battery').closest('.hero').classList.toggle('unknown', unknownCar);
   renderBattery();
   renderNext();
