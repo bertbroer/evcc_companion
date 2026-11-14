@@ -1,6 +1,6 @@
 import json, os, re, urllib.request, urllib.error
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, unquote, quote
 
 OPTIONS='/data/options.json'
 ASSETS={'/manifest.webmanifest':'application/manifest+json','/icon.svg':'image/svg+xml','/apple-touch-icon.png':'image/png','/car.png':'image/png'}
@@ -32,11 +32,13 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(200,{'timezone':settings().get('timezone','Europe/Amsterdam')}); return
         if not path.startswith('/proxy/'):
             self.reply(404,{'error':'Not found'}); return
-        endpoint=path[len('/proxy/'):]
+        # Decode first: the app URL-encodes vehicle names, and evcc names vehicles
+        # configured in its UI 'db:<id>', which arrives as 'db%3A<id>'.
+        endpoint=unquote(path[len('/proxy/'):])
         # Strict allowlist: never expose arbitrary evcc endpoints or URLs.
         allowed=(method=='GET' and endpoint in ('state','sessions')) or (method=='POST' and (
             re.fullmatch(r'loadpoints/[1-9][0-9]*/mode/(off|smart|now)',endpoint) or
-            re.fullmatch(r'vehicles/[A-Za-z0-9_.:-]+/plan/repeating',endpoint)))
+            re.fullmatch(r'vehicles/(?!\.+/)[A-Za-z0-9_.:-]+/plan/repeating',endpoint)))
         if not allowed:
             self.reply(403,{'error':'Endpoint not permitted'}); return
         payload=None
@@ -63,7 +65,7 @@ class Handler(BaseHTTPRequestHandler):
         if payload is not None: headers['Content-Type']='application/json'
         if cfg.get('api_key'): headers['Authorization']='Bearer '+cfg['api_key']
         try:
-            req=urllib.request.Request(base+'/api/'+endpoint,data=payload,headers=headers,method=method)
+            req=urllib.request.Request(base+'/api/'+quote(endpoint,safe='/:'),data=payload,headers=headers,method=method)
             with urllib.request.urlopen(req,timeout=12) as res:
                 self.reply(res.status,res.read(),res.headers.get('Content-Type','application/json'))
         except urllib.error.HTTPError as e:

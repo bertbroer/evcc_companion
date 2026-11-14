@@ -33,9 +33,8 @@
   --shadow:0 10px 30px rgba(17,23,20,.05);
   --shadow-lg:0 14px 34px rgba(17,23,20,.22);
   --scrim:rgba(11,15,13,.32);
-  /* Actieve keuze (modus, tab) en de uitgelichte kaart op Planning */
+  /* Actieve keuze (modus, tab) */
   --active:var(--mint);--on-active:var(--on-mint);--active-glow:0 10px 24px rgba(43,211,138,.32);
-  --feature:var(--mint);--on-feature:var(--on-mint);--feature-lbl:#0e3d27;
 
   --font:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
 
@@ -60,7 +59,6 @@
   --shadow-lg:0 14px 34px rgba(0,0,0,.55);
   --scrim:rgba(0,0,0,.55);
   --active:#ececee;--on-active:#101113;--active-glow:none;
-  --feature:var(--card);--on-feature:var(--ink);--feature-lbl:var(--muted);
 }}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -154,10 +152,6 @@ h1{font:800 28px/34px var(--font);letter-spacing:-.02em;margin:0;white-space:now
 /* Planning */
 .save{flex:none;height:44px;padding:0 20px;border-radius:22px;font-size:15px;font-weight:800;background:var(--ink);color:var(--bg);transition:background .2s,color .2s}
 .save:disabled{background:var(--track);color:var(--muted)}
-.next-card{background:var(--feature);color:var(--on-feature);box-shadow:var(--shadow);border-radius:26px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.next-card .lbl{color:var(--feature-lbl);font-weight:700}
-.next-card b{display:block;font-size:22px;line-height:28px;font-weight:800;letter-spacing:-.01em}
-.next-card .right{text-align:right}
 #days{padding:4px 8px 4px 16px}
 .day{display:flex;align-items:center;gap:8px;min-height:62px}
 .day+.day{border-top:1px solid var(--line)}
@@ -347,11 +341,6 @@ html:not(.ready) *{transition:none!important}
     <button class="save" id="save" disabled>Bewaar</button>
   </header>
   <p class="subtitle">Elke week hetzelfde. Kies de dagen waarop je de auto nodig hebt.</p>
-
-  <section class="next-card" aria-label="Volgend vertrek">
-    <div><span class="lbl">Volgend vertrek</span><b id="nextCardWhen">Geen planning</b></div>
-    <div class="right"><span class="lbl">Laden tot</span><b id="nextCardSoc">—</b></div>
-  </section>
 
   <h2 class="h2">Weekschema</h2>
   <div class="card" id="days"></div>
@@ -584,13 +573,9 @@ function renderNext(){
   label.hidden = !d;
   if (!d) {
     $('next').textContent = 'Geen planning';
-    $('nextCardWhen').textContent = 'Geen planning';
-    $('nextCardSoc').textContent = '—';
   } else {
     const day = d.offset === 0 ? 'Vandaag' : d.offset === 1 ? 'Morgen' : WEEKDAYS[d.i];
     $('next').textContent = `${day} ${d.time}`;
-    $('nextCardWhen').textContent = `${day}, ${d.time}`;
-    $('nextCardSoc').textContent = d.soc + '%';
     label.textContent = 'Doel ' + d.soc + '%';
   }
   renderBattery();
