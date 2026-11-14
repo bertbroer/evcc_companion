@@ -264,26 +264,25 @@ input[type=checkbox]{margin:0;accent-color:var(--mint);width:51px;height:31px}
 .toast.show{transform:translate(-50%,0);visibility:visible}
 .toast.error{background:var(--bad)}
 
-@media (max-height:720px){
-  #home{gap:10px}
-  .top{min-height:44px;margin-bottom:0}
-  .hero{padding:16px;gap:10px}
-  .soc{font-size:52px}
-  .seg{height:28px}
-  .car{max-height:84px}
-  .tile{padding:14px 16px}
-  .tile .ico{display:none}
-  .link-tile{padding:10px 10px 10px 14px}
-  .link-tile .ico{width:34px;height:34px;border-radius:11px}
-  .go{width:38px;height:38px;border-radius:13px}
-  .mode-block{margin-top:0;gap:8px}
-  .mode{height:64px;gap:4px}
-  .mode svg{width:18px;height:18px}
-  .mode-note{display:none}
-}
-@media (max-height:620px){
-  .mode svg{display:none}
-}
+/* Het hoofdscherm schuift stapsgewijs in tot het past (zie fitHome). */
+#home.snug{gap:10px}
+#home.snug .top{min-height:44px;margin-bottom:0}
+#home.snug .mode-block{margin-top:0;gap:8px}
+#home.snug .mode-note{display:none}
+#home.compact .hero{padding:16px;gap:10px}
+#home.compact .soc{font-size:52px}
+#home.compact .seg{height:28px}
+#home.compact .car{max-height:84px}
+#home.compact .tile{padding:14px 16px}
+#home.compact .tile .ico{display:none}
+#home.compact .link-tile{padding:10px 10px 10px 14px}
+#home.compact .link-tile .ico{width:34px;height:34px;border-radius:11px}
+#home.compact .go{width:38px;height:38px;border-radius:13px}
+#home.compact .mode{height:64px;gap:4px}
+#home.compact .mode svg{width:18px;height:18px}
+#home.tight .mode svg{display:none}
+#home.tight .mode{height:52px}
+#home.tight .car{max-height:64px}
 html:not(.ready) *{transition:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -633,6 +632,7 @@ function renderHome(s, v){
 
   renderMode(pendingMode ?? loadpoint?.mode);
   $('save').disabled = !(vehicle && dirty);
+  scheduleFit();
 }
 
 function renderMode(mode){
@@ -1006,6 +1006,7 @@ function renderSessions(list){
 /* Navigatie */
 function showTab(name){
   if (name === 'history') loadSessions();
+  if (name === 'home') requestAnimationFrame(fitHome);
   for (const tab of document.querySelectorAll('[data-tab]')) {
     tab.setAttribute('aria-selected', tab.dataset.tab === name);
     $(tab.dataset.tab).hidden = tab.dataset.tab !== name;
@@ -1013,6 +1014,25 @@ function showTab(name){
 }
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => showTab(b.dataset.tab));
 $('nextRow').onclick = () => showTab('planning');
+
+/* Laden past altijd op één scherm: schuif in stappen in tot er niets meer scrolt.
+   Gemeten in plaats van geraden, want hoogte en safe areas verschillen per iPhone en per modus. */
+const FIT_LEVELS = ['snug', 'compact', 'tight'];
+function fitHome(){
+  const home = $('home');
+  if (home.hidden) return;
+  home.classList.remove(...FIT_LEVELS);
+  for (const level of FIT_LEVELS) {
+    if (home.scrollHeight <= home.clientHeight + 1) break;
+    home.classList.add(level);
+  }
+}
+let fitFrame;
+const scheduleFit = () => { cancelAnimationFrame(fitFrame); fitFrame = requestAnimationFrame(fitHome); };
+addEventListener('resize', scheduleFit);
+addEventListener('orientationchange', scheduleFit);
+document.fonts?.ready.then(scheduleFit);
+document.querySelector('.car').addEventListener('load', scheduleFit);
 
 /* Laadmodus: wijzigt direct; bij een fout springt hij terug. */
 document.querySelectorAll('[data-mode]').forEach(b => b.onclick = async () => {
