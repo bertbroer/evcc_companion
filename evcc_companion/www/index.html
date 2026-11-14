@@ -14,11 +14,14 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="preload" href="fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <title>EVCC</title>
 <style>
+/* Plus Jakarta Sans (SIL OFL 1.1, zie fonts/OFL.txt), lokaal: geen verzoek naar Google en werkt offline. */
+@font-face{font-family:"Plus Jakarta Sans";font-style:normal;font-weight:500 800;font-display:swap;src:url(fonts/plus-jakarta-sans-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Plus Jakarta Sans";font-style:normal;font-weight:500 800;font-display:swap;src:url(fonts/plus-jakarta-sans-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 /* Lichte bento-tegels met één mintgroen accent; donker volgt het toestel. */
 :root{
   color-scheme:light dark;
@@ -171,6 +174,18 @@ input[type=checkbox]{margin:0;accent-color:var(--mint);width:51px;height:31px}
 .no-native-switch input[type=checkbox]:checked{background:var(--mint)}
 .no-native-switch input[type=checkbox]:checked::after{transform:translateX(20px)}
 
+/* Eenmalig vertrek */
+#oneTime{padding:4px 8px 4px 16px}
+.once-add{display:flex;align-items:center;gap:12px;width:100%;min-height:62px;text-align:left;transition:opacity .15s}
+.once-add:active{opacity:.6}
+.once-add .plus{width:36px;height:36px;border-radius:12px;background:var(--mint-soft);color:var(--mint-ink);display:flex;align-items:center;justify-content:center;flex:none}
+.once-add .plus svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.once-add b{display:block;font-size:16px;line-height:21px;font-weight:700}
+.once-add small{display:block;font-size:13px;line-height:18px;color:var(--muted)}
+.once-row{display:flex;align-items:center;gap:4px;min-height:62px}
+.once-del{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--bad);flex:none}
+.once-del svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
 /* Laadprognose */
 .stats{display:flex;gap:24px;flex-wrap:wrap}
 .stats b{display:block;font-size:22px;line-height:28px;font-weight:800}
@@ -240,6 +255,11 @@ input[type=checkbox]{margin:0;accent-color:var(--mint);width:51px;height:31px}
 .sheet-btn.done{justify-self:end;background:var(--active);color:var(--on-active);font-weight:800}
 .wheel-labels{display:grid;grid-template-columns:2fr 1fr;text-align:center;font-size:13px;line-height:18px;font-weight:700;color:var(--muted);margin-top:8px}
 .wheels{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;height:180px;margin-top:4px}
+.wheels.with-day{grid-template-columns:1.6fr 1fr 1fr 1fr}
+.wheel-labels.with-day{grid-template-columns:1.6fr 2fr 1fr}
+.wheel-labels .day-label{display:none}
+.wheel-labels.with-day .day-label{display:block}
+.wheel.wheel-day div{font-size:18px}
 .wheels::before{content:"";position:absolute;left:0;right:0;top:72px;height:36px;border-radius:12px;background:var(--chip)}
 .wheel{position:relative;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;padding:72px 0;text-align:center;-webkit-mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent);mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent)}
 .wheel::-webkit-scrollbar{display:none}
@@ -342,6 +362,23 @@ html:not(.ready) *{transition:none!important}
   </header>
   <p class="subtitle">Elke week hetzelfde. Kies de dagen waarop je de auto nodig hebt.</p>
 
+  <h2 class="h2">Eenmalig vertrek</h2>
+  <div class="card" id="oneTime">
+    <button class="once-add" id="onceAdd">
+      <span class="plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+      <span><b>Eenmalig vertrek toevoegen</b><small>Los van het weekschema</small></span>
+    </button>
+    <div class="once-row" id="onceRow" hidden>
+      <button class="day-main" id="onceEdit">
+        <span class="day-name"><b id="onceDay"></b><small>Eenmalig</small></span>
+        <span class="pill"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="onceTime"></span></span>
+        <span class="pill pct" id="onceSoc"></span>
+      </button>
+      <button class="once-del" id="onceDelete" aria-label="Eenmalig vertrek verwijderen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>
+    </div>
+  </div>
+  <p class="note">Wordt direct in evcc gezet. evcc laadt voor het vertrek dat als eerste komt.</p>
+
   <h2 class="h2">Weekschema</h2>
   <div class="card" id="days"></div>
   <p class="note">Bewaren vervangt de herhalende plannen van deze auto in evcc. Eenmalige plannen blijven staan.</p>
@@ -423,7 +460,7 @@ html:not(.ready) *{transition:none!important}
     <h2 id="sheetTitle"></h2>
     <button class="sheet-btn done" id="sheetDone">Gereed</button>
   </div>
-  <div class="wheel-labels"><span>Klaar om</span><span>Laden tot</span></div>
+  <div class="wheel-labels" id="wheelLabels"><span class="day-label">Dag</span><span>Klaar om</span><span>Laden tot</span></div>
   <div class="wheels" id="wheels"></div>
 </section>
 
@@ -553,7 +590,7 @@ const segments = Array.from({length:SEG_COUNT}, () => {
   return seg;
 });
 function renderBattery(){
-  const goal = nextDeparture()?.soc ?? null;
+  const goal = upcoming()?.soc ?? null;
   const tip = socNow === null ? -1 : Math.min(SEG_COUNT - 1, Math.floor(Math.max(0, socNow - 0.01)/SEG_STEP));
   segments.forEach((seg, i) => {
     const fill = socNow === null ? 0 : Math.max(0, Math.min(SEG_STEP, socNow - i*SEG_STEP))/SEG_STEP*100;
@@ -567,18 +604,40 @@ function renderBattery(){
   el.setAttribute('aria-label', socNow === null ? 'Accu onbekend' : 'Accu ' + Math.round(socNow) + ' procent' + (goal ? ', doel ' + goal + ' procent' : ''));
 }
 
-function renderNext(){
+/* Eerstvolgende vertrek: weekschema of eenmalig, wat het eerst komt. */
+let oncePlan = null;
+const relDay = t => dayKey(t) === dayKey(Date.now()) ? 'Vandaag' : dayKey(t) === dayKey(Date.now() + 86400000) ? 'Morgen' : fmtDate(t);
+function upcoming(){
   const d = nextDeparture();
+  const weekly = d && {soc:d.soc, delta:d.delta, label:`${d.offset === 0 ? 'Vandaag' : d.offset === 1 ? 'Morgen' : WEEKDAYS[d.i]} ${d.time}`};
+  const once = oncePlan && oncePlan.time > Date.now() && {soc:oncePlan.soc, delta:(oncePlan.time - Date.now())/60000, label:`${relDay(oncePlan.time)} ${fmtClock(oncePlan.time)}`};
+  return once && (!weekly || once.delta < weekly.delta) ? once : weekly || null;
+}
+
+function renderNext(){
+  const d = upcoming();
   const label = $('targetLabel');
   label.hidden = !d;
-  if (!d) {
-    $('next').textContent = 'Geen planning';
-  } else {
-    const day = d.offset === 0 ? 'Vandaag' : d.offset === 1 ? 'Morgen' : WEEKDAYS[d.i];
-    $('next').textContent = `${day} ${d.time}`;
-    label.textContent = 'Doel ' + d.soc + '%';
-  }
+  $('next').textContent = d ? d.label : 'Geen planning';
+  if (d) label.textContent = 'Doel ' + d.soc + '%';
   renderBattery();
+}
+
+function readOnce(v){
+  const time = validTime(v?.plan?.time);
+  oncePlan = time && isNum(v.plan.soc) && time > Date.now() ? {time, soc:v.plan.soc} : null;
+  renderOnce();
+}
+function renderOnce(){
+  $('onceAdd').hidden = !!oncePlan;
+  $('onceRow').hidden = !oncePlan;
+  if (oncePlan) {
+    $('onceDay').textContent = relDay(oncePlan.time);
+    $('onceTime').textContent = fmtClock(oncePlan.time);
+    $('onceSoc').textContent = oncePlan.soc + '%';
+    $('onceEdit').setAttribute('aria-label', `Eenmalig vertrek ${relDay(oncePlan.time)}, klaar om ${fmtClock(oncePlan.time)}, laden tot ${oncePlan.soc} procent`);
+  }
+  renderNext();
 }
 
 function planSlots(lp){
@@ -791,6 +850,7 @@ async function refresh(){
     renderEnergy(s);
     renderForecast(loadpoint);
     if (!dirty) readPlans(v);
+    readOnce(v);
   } catch (e) {
     const status = $('status');
     status.className = 'sub bad';
@@ -879,23 +939,92 @@ let socWheel = makeWheel(socValues, 'Accu tot');
 $('wheels').append(hourWheel.el, minuteWheel.el, socWheel.el);
 
 let editing = null;
+function ensureSoc(soc){
+  if (socWheel.values.includes(soc)) return;
+  const values = [...socValues, soc].sort((a, b) => parseInt(a) - parseInt(b));
+  const next = makeWheel(values, 'Accu tot');
+  socWheel.el.replaceWith(next.el);
+  socWheel = next;
+}
+function sheetMode(withDay){
+  $('wheels').classList.toggle('with-day', withDay);
+  $('wheelLabels').classList.toggle('with-day', withDay);
+  dayWheel.el.hidden = !withDay;
+}
+function showSheet(time, soc){
+  $('sheet').classList.add('open');
+  $('scrim').classList.add('open');
+  hourWheel.set(time.slice(0,2));
+  minuteWheel.set(time.slice(3));
+  socWheel.set(soc);
+}
 function openSheet(i){
   editing = i;
   const d = days[i];
   $('sheetTitle').textContent = WEEKDAYS[i];
-  const soc = d.soc + '%';
-  if (!socWheel.values.includes(soc)) {
-    const values = [...socValues, soc].sort((a, b) => parseInt(a) - parseInt(b));
-    const next = makeWheel(values, 'Accu tot');
-    socWheel.el.replaceWith(next.el);
-    socWheel = next;
-  }
-  $('sheet').classList.add('open');
-  $('scrim').classList.add('open');
-  hourWheel.set(d.time.slice(0,2));
-  minuteWheel.set(d.time.slice(3));
-  socWheel.set(soc);
+  ensureSoc(d.soc + '%');
+  sheetMode(false);
+  showSheet(d.time, d.soc + '%');
 }
+
+/* Dagenwiel voor een eenmalig vertrek: vandaag tot en met over een week, in de tijdzone van evcc. */
+const zoneParts = t => { const p = dateFormat({year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit'}).formatToParts(new Date(t)); const g = k => Number(p.find(x => x.type === k).value); return {y:g('year'), m:g('month'), d:g('day'), h:g('hour') % 24, mi:g('minute'), s:g('second')}; };
+const zoneOffset = t => { const p = zoneParts(t); return Date.UTC(p.y, p.m - 1, p.d, p.h, p.mi, p.s) - Math.floor(t/1000)*1000; };
+function zonedTime(y, m, d, h, mi){
+  const wall = Date.UTC(y, m - 1, d, h, mi);
+  return wall - zoneOffset(wall - zoneOffset(wall));
+}
+let dayWheel = makeWheel(['Vandaag'], 'Dag'), dayOptions = [];
+dayWheel.el.classList.add('wheel-day');
+$('wheels').prepend(dayWheel.el);
+function buildDayWheel(){
+  dayOptions = Array.from({length:8}, (_, k) => { const t = Date.now() + k*86400000; return {...zoneParts(t), label:relDay(t)}; });
+  const next = makeWheel(dayOptions.map(o => o.label), 'Dag');
+  next.el.classList.add('wheel-day');
+  dayWheel.el.replaceWith(next.el);
+  dayWheel = next;
+}
+function openOnce(){
+  editing = 'once';
+  $('sheetTitle').textContent = 'Eenmalig vertrek';
+  buildDayWheel();
+  sheetMode(true);
+  const t = oncePlan?.time;
+  const soc = (oncePlan?.soc ?? 80) + '%';
+  ensureSoc(soc);
+  showSheet(t ? fmtClock(t) : '07:00', soc);
+  dayWheel.set(t ? relDay(t) : 'Morgen');
+}
+$('onceAdd').onclick = openOnce;
+$('onceEdit').onclick = openOnce;
+
+async function saveOnce(time, soc){
+  if (!vehicle) { toast('Geen auto gevonden in evcc', true); return; }
+  const stamp = new Date(time).toISOString().replace(/\.\d{3}Z$/, 'Z');
+  try {
+    await api('vehicles/' + encodeURIComponent(vehicle) + '/plan/soc/' + soc + '/' + stamp, {method:'POST'});
+    oncePlan = {time, soc};
+    renderOnce();
+    toast('Eenmalig vertrek ingesteld');
+    refresh();
+  } catch (e) {
+    toast('Instellen mislukt: ' + e.message, true);
+  }
+}
+$('onceDelete').onclick = async () => {
+  if (!vehicle) return;
+  const yes = await ask({title:'Eenmalig vertrek verwijderen?', text:'Het weekschema blijft gewoon staan.', ok:'Verwijder'});
+  if (!yes) return;
+  try {
+    await api('vehicles/' + encodeURIComponent(vehicle) + '/plan/soc', {method:'DELETE'});
+    oncePlan = null;
+    renderOnce();
+    toast('Eenmalig vertrek verwijderd');
+    refresh();
+  } catch (e) {
+    toast('Verwijderen mislukt: ' + e.message, true);
+  }
+};
 function closeSheet(){
   $('sheet').classList.remove('open');
   $('scrim').classList.remove('open');
@@ -904,6 +1033,14 @@ function closeSheet(){
 $('scrim').onclick = closeSheet;
 $('sheetCancel').onclick = closeSheet;
 $('sheetDone').onclick = () => {
+  if (editing === 'once') {
+    const day = dayOptions[dayWheel.values.indexOf(dayWheel.value)];
+    const time = zonedTime(day.y, day.m, day.d, Number(hourWheel.value), Number(minuteWheel.value));
+    if (time < Date.now() + 5*60000) { toast('Kies een vertrektijd die nog moet komen', true); return; }
+    closeSheet();
+    saveOnce(time, parseInt(socWheel.value, 10));
+    return;
+  }
   const i = editing;
   days[i].time = hourWheel.value + ':' + minuteWheel.value;
   days[i].soc = parseInt(socWheel.value, 10);

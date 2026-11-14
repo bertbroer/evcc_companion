@@ -1,4 +1,4 @@
-# EVCC Companion v0.9 — Home Assistant custom app
+# EVCC Companion v0.10 — Home Assistant custom app
 
 A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day recurring planner.
 
@@ -6,7 +6,7 @@ A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day
 
 1. Extract the ZIP and copy its contents into your public GitHub repository, keeping `repository.yaml` in the root and the `evcc_companion` folder intact. Commit the changes.
 2. Home Assistant → Settings → Apps → App Store → ⋮ → Check for updates / Reload.
-3. Open EVCC Companion and update to **0.9.3**. If necessary restart it.
+3. Open EVCC Companion and update to **0.10.0**. If necessary restart it.
 4. Remove the old `companion_password` setting if it remains in the app's saved configuration. Version 0.3 does not use a login.
 5. In the app's **Network** section, map `8099/tcp` to host port `8099` and restart. Visit `http://<HOME_ASSISTANT_LAN_IP>:8099/` while on your home Wi-Fi.
 
@@ -53,3 +53,11 @@ No change to evcc API operations.
 A fourth tab, **Historie**, lists evcc's charging sessions (`GET /api/sessions`), newest first and grouped by month. Each row shows date and start–end time, energy charged (`chargedEnergy`, kWh) and total price (`price`, or `pricePerKWh × chargedEnergy` when `price` is missing). A session without an end time is shown as *bezig*. The card at the top totals kWh, cost and number of sessions for the current month. The proxy allowlist now also permits `GET sessions` (read-only).
 
 v0.9 also fixes the car image from v0.8.1 not loading: the server did not serve `car.png`.
+
+## v0.10
+
+- **Eenmalig vertrek** on the Planning tab: set a one-off departure (day, time, target) next to the weekly schedule, applied to evcc immediately (`POST /api/vehicles/{name}/plan/soc/{soc}/{RFC3339 time}`) and removable (`DELETE /api/vehicles/{name}/plan/soc`). It is read back from the vehicle's `plan` in the evcc state. The home screen's next departure shows whichever comes first, weekly or one-off.
+- The server now serves any file in `www` with a known web file type, instead of a fixed list. Paths outside `www` and hidden files are refused. The page is never cached; other files for one hour.
+- The Plus Jakarta Sans font is bundled in `www/fonts` (SIL Open Font License, `fonts/OFL.txt`): no request to Google, and it works offline.
+- `repository.yaml` points to this repository.
+- For local testing, `EVCC_COMPANION_OPTIONS`, `EVCC_COMPANION_WWW` and `EVCC_COMPANION_PORT` override the options file, web folder and port.
