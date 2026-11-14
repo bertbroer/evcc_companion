@@ -1,4 +1,4 @@
-# EVCC Companion v0.12 — Home Assistant custom app
+# EVCC Companion v0.13 — Home Assistant custom app
 
 A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day recurring planner.
 
@@ -6,7 +6,7 @@ A mobile-friendly evcc dashboard with Off / Smart / Now controls and a seven-day
 
 1. Extract the ZIP and copy its contents into your public GitHub repository, keeping `repository.yaml` in the root and the `evcc_companion` folder intact. Commit the changes.
 2. Home Assistant → Settings → Apps → App Store → ⋮ → Check for updates / Reload.
-3. Open EVCC Companion and update to **0.12.0**. If necessary restart it.
+3. Open EVCC Companion and update to **0.13.0**. If necessary restart it.
 4. Remove the old `companion_password` setting if it remains in the app's saved configuration. Version 0.3 does not use a login.
 5. In the app's **Network** section, map `8099/tcp` to host port `8099` and restart. Visit `http://<HOME_ASSISTANT_LAN_IP>:8099/` while on your home Wi-Fi.
 
@@ -70,3 +70,19 @@ When a car is connected but evcc has not matched it to a configured vehicle (`co
 
 - The battery card shows the car's range under the charge level (`vehicleRange`, km).
 - The label top right is now the vehicle's charge limit (`vehicleLimitSoc`), shown as *Limiet 90%*, and the dashed segments of the meter run up to that limit. Previously both followed the target of the next departure. Both are hidden for guest vehicles.
+
+## v0.13: State of Health
+
+A fifth tab, **SoH** (*State of Health*), estimates the battery's usable capacity and health.
+
+evcc's session history does not store the state of charge, so the add-on measures it itself: a background thread reads the evcc state every minute and, for each connection of a recognised vehicle, records the first and last `vehicleSoc` and the energy charged (`sessionEnergy`). When the car is unplugged, a session with at least 15% SoC gained and 5 kWh charged becomes a measurement:
+
+    capacity ≈ kWh charged × charging_efficiency ÷ (SoC gained ÷ 100)
+
+The tab shows the median of the last 10 estimates, as a percentage of the nominal capacity, a chart of all measurements with a trend line, and the list of measurements. Measurements are stored in `/data/soh.json` and survive updates. **They start from the moment this version runs**; there is no history to import.
+
+New options:
+- `charging_efficiency` (default `0.9`): share of grid energy that ends up in the battery. AC charging typically loses 8–12%.
+- `battery_capacity` (optional, kWh): nominal usable capacity to compare against. Without it the app uses the vehicle's `capacity` from evcc, if set; otherwise it shows only the estimated kWh.
+
+Treat it as a trend, not a lab measurement: SoC from the car's API is rounded and can lag, and charging losses vary with temperature and power.

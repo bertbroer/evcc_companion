@@ -251,6 +251,20 @@ input[type=checkbox]{margin:0;accent-color:var(--mint);width:51px;height:31px}
 .session .live{color:var(--mint-ink)}
 .h-empty{padding:18px 0;color:var(--muted);font-size:14px}
 
+/* State of Health */
+.soh-big{display:flex;align-items:baseline;gap:4px;font-size:64px;line-height:1;font-weight:800;letter-spacing:-.04em}
+.soh-big small{font-size:26px;font-weight:700;color:var(--muted);letter-spacing:0}
+.soh-sub{font-size:14px;line-height:20px;color:var(--muted);font-weight:600}
+.soh-bar{height:12px;border-radius:6px;background:var(--track);overflow:hidden}
+.soh-bar i{display:block;height:100%;width:0;border-radius:6px;background:var(--mint);transition:width .5s}
+.soh-chart svg{display:block;width:100%;height:auto;overflow:visible}
+.soh-chart .grid{stroke:var(--line);stroke-width:1}
+.soh-chart .nominal{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4}
+.soh-chart .trend{fill:none;stroke:var(--mint);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
+.soh-chart .dot{fill:var(--mint);stroke:var(--card);stroke-width:2}
+.soh-chart text{fill:var(--muted);font:600 10px var(--font)}
+.chip.soft{background:var(--chip);color:var(--muted)}
+
 /* Sheet en alert */
 .scrim{position:fixed;inset:0;z-index:30;background:var(--scrim);opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
 .scrim.open{opacity:1;visibility:visible}
@@ -455,11 +469,29 @@ html:not(.ready) *{transition:none!important}
   <p class="note" id="historyNote">Laadsessies zoals evcc ze bijhoudt. Kosten volgens het tarief in evcc.</p>
 </main>
 
+<main id="soh" class="screen" role="tabpanel" aria-labelledby="tab-soh" hidden>
+  <header class="top"><h1>State of Health</h1></header>
+  <section class="card card-pad" aria-label="Accugezondheid">
+    <div class="card-head"><span class="lbl" id="sohVehicle">Geschatte accugezondheid</span><span class="chip soft" id="sohBadge">Leren</span></div>
+    <div class="soh-big" id="sohBig"><span id="sohValue">—</span><small id="sohUnit">%</small></div>
+    <div class="soh-bar" id="sohBarWrap" aria-hidden="true"><i id="sohBar"></i></div>
+    <p class="soh-sub" id="sohSub">Nog geen metingen.</p>
+  </section>
+  <section class="card card-pad" id="sohChartCard" aria-label="Verloop" hidden>
+    <div class="card-head"><h2>Verloop</h2><span class="chip soft" id="sohRange"></span></div>
+    <div class="soh-chart" id="sohChart"></div>
+  </section>
+  <div class="month" id="sohListHead" hidden><h2 class="h2">Metingen</h2><span id="sohCount"></span></div>
+  <div class="card sessions" id="sohList" hidden></div>
+  <p class="note" id="sohNote">De app meet zelf: bij elke laadbeurt van minstens 15% noteert hij het laadpercentage aan het begin en eind en de geladen kWh. Daaruit volgt een schatting van de bruikbare capaciteit. evcc bewaart geen laadpercentage in de historie, dus de metingen beginnen vanaf de installatie van deze versie. Eén meting zegt weinig; het verloop over maanden telt.</p>
+</main>
+
 <nav class="tabbar" role="tablist" aria-label="Schermen">
   <button class="tab" id="tab-home" role="tab" data-tab="home" aria-selected="true" aria-label="Laden"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.6 2.2c.3-.5 1-.2.9.3L13.2 10h5.2c.5 0 .8.6.5 1l-8.5 10.8c-.4.5-1.1.1-1-.4l1.4-7.9H5.6c-.5 0-.8-.6-.5-1z"/></svg><span aria-hidden="true">Laden</span></button>
   <button class="tab" id="tab-planning" role="tab" data-tab="planning" aria-selected="false" aria-label="Planning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span aria-hidden="true">Planning</span></button>
   <button class="tab" id="tab-energy" role="tab" data-tab="energy" aria-selected="false" aria-label="Energie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 20v-6M12 20V10M19 20V4"/></svg><span aria-hidden="true">Energie</span></button>
   <button class="tab" id="tab-history" role="tab" data-tab="history" aria-selected="false" aria-label="Historie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4.5H8M12 7.5V12l3 2"/></svg><span aria-hidden="true">Historie</span></button>
+  <button class="tab" id="tab-soh" role="tab" data-tab="soh" aria-selected="false" aria-label="State of Health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="17.5" height="10" rx="3"/><path d="M22 10.5v3M5.5 12h2.5l1.5-2.5 2 5 1.5-2.5h2"/></svg><span aria-hidden="true">SoH</span></button>
 </nav>
 
 <div class="scrim" id="scrim"></div>
@@ -1159,9 +1191,110 @@ function renderSessions(list){
   }
 }
 
+/* State of Health: metingen komen van de app-server (/soh), die tijdens elke laadbeurt
+   het laadpercentage en de geladen kWh noteert. */
+let sohLoaded = 0;
+async function loadSoh(force = false){
+  if (!force && Date.now() - sohLoaded < 60000) return;
+  try {
+    const r = await fetch('soh');
+    if (!r.ok) throw new Error('foutcode ' + r.status);
+    sohLoaded = Date.now();
+    renderSoh(await r.json());
+  } catch (e) {
+    $('sohSub').textContent = 'Kan de metingen niet ophalen: ' + e.message;
+  }
+}
+const median = xs => { const a = [...xs].sort((x, y) => x - y), m = a.length >> 1; return a.length % 2 ? a[m] : (a[m - 1] + a[m])/2; };
+
+function renderSoh(data){
+  const rows = (data.measurements || []).filter(m => (!vehicle || m.vehicle === vehicle) && isNum(m.capacity)).sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+  const active = (data.active || []).find(a => !vehicle || a.vehicle === vehicle);
+  const nominal = data.nominal || state?.vehicles?.[vehicle]?.capacity || null;
+  const title = state?.vehicles?.[vehicle]?.title || rows[rows.length - 1]?.title;
+  $('sohVehicle').textContent = 'Geschatte accugezondheid' + (title ? ' · ' + title : '');
+
+  const recent = rows.slice(-10).map(m => m.capacity);
+  const capacity = recent.length ? median(recent) : null;
+  const soh = capacity && isNum(nominal) && nominal > 0 ? Math.min(110, capacity/nominal*100) : null;
+  const enough = rows.length >= 3;
+  $('sohBadge').textContent = !rows.length ? 'Leren' : enough ? rows.length + ' metingen' : 'Voorlopig';
+  $('sohBadge').className = 'chip ' + (enough ? 'mint' : 'soft');
+
+  if (soh !== null) {
+    $('sohValue').textContent = number(soh, 0);
+    $('sohUnit').textContent = '%';
+  } else if (capacity) {
+    $('sohValue').textContent = number(capacity, 1);
+    $('sohUnit').textContent = 'kWh';
+  } else {
+    $('sohValue').textContent = '—';
+    $('sohUnit').textContent = '';
+  }
+  $('sohBarWrap').hidden = soh === null;
+  $('sohBar').style.width = (soh === null ? 0 : Math.min(100, soh)) + '%';
+
+  const progress = active ? ` Nu bezig: ${number(active.socStart ?? 0, 0)}% → ${number(active.socNow ?? 0, 0)}%, ${number(active.energy, 1)} kWh.` : '';
+  if (!rows.length) {
+    $('sohSub').textContent = `Nog geen metingen. De eerste volgt na een laadbeurt van minstens ${data.minSocGain || 15}%.` + progress;
+  } else {
+    const base = `≈ ${number(capacity, 1)} kWh bruikbaar` + (isNum(nominal) ? ` van ${number(nominal, 1)} kWh` : '') + ` · mediaan van de laatste ${recent.length} ${recent.length === 1 ? 'meting' : 'metingen'}.`;
+    const hint = isNum(nominal) ? '' : ' Stel de nominale capaciteit in bij de app-instellingen (battery_capacity) voor een percentage.';
+    $('sohSub').textContent = base + (enough ? '' : ' Nog een schatting: na 3 metingen wordt hij betrouwbaarder.') + hint + progress;
+  }
+
+  $('sohChartCard').hidden = rows.length < 2;
+  if (rows.length >= 2) renderSohChart(rows, nominal);
+
+  $('sohListHead').hidden = $('sohList').hidden = !rows.length;
+  $('sohCount').textContent = `rendement ${number((data.efficiency || 0.9)*100, 0)}%`;
+  const list = $('sohList');
+  list.replaceChildren();
+  for (const m of [...rows].reverse().slice(0, 50)) {
+    const row = el('div', 'session');
+    const when = el('div', 'when');
+    when.append(el('b', '', fmtDate(Date.parse(m.start))), el('small', '', `${number(m.socStart, 0)}% → ${number(m.socEnd, 0)}% · ${number(m.energy, 1)} kWh`));
+    const amount = el('div', 'amount');
+    amount.append(el('b', '', '≈ ' + number(m.capacity, 1) + ' kWh'), el('small', '', isNum(nominal) ? number(m.capacity/nominal*100, 0) + '%' : ''));
+    row.append(when, amount);
+    list.append(row);
+  }
+}
+
+function renderSohChart(rows, nominal){
+  const NS = 'http://www.w3.org/2000/svg', W = 320, H = 150, L = 34, R = 8, T = 10, B = 22;
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('role', 'img');
+  const caps = rows.map(m => m.capacity);
+  let lo = Math.min(...caps, isNum(nominal) ? nominal : Infinity), hi = Math.max(...caps, isNum(nominal) ? nominal : -Infinity);
+  const pad = Math.max(2, (hi - lo)*0.15); lo = Math.floor(lo - pad); hi = Math.ceil(hi + pad);
+  const t0 = Date.parse(rows[0].start), t1 = Date.parse(rows[rows.length - 1].start), span = Math.max(1, t1 - t0);
+  const x = t => L + (Date.parse(t) - t0)/span*(W - L - R);
+  const y = v => T + (hi - v)/(hi - lo)*(H - T - B);
+  const add = (tag, attrs, text) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text !== undefined) n.textContent = text; svg.append(n); return n; };
+  for (const v of [lo, (lo + hi)/2, hi]) {
+    add('line', {class:'grid', x1:L, x2:W - R, y1:y(v), y2:y(v)});
+    add('text', {x:L - 6, y:y(v) + 3, 'text-anchor':'end'}, number(v, 0));
+  }
+  if (isNum(nominal)) {
+    add('line', {class:'nominal', x1:L, x2:W - R, y1:y(nominal), y2:y(nominal)});
+    add('text', {x:W - R, y:y(nominal) - 5, 'text-anchor':'end'}, 'nominaal ' + number(nominal, 1));
+  }
+  const trend = rows.map((m, i) => [x(m.start), y(median(rows.slice(Math.max(0, i - 4), i + 1).map(r => r.capacity)))]);
+  add('polyline', {class:'trend', points:trend.map(p => p.join(',')).join(' ')});
+  for (const m of rows) add('circle', {class:'dot', cx:x(m.start), cy:y(m.capacity), r:4});
+  add('text', {x:L, y:H - 4}, fmtDate(t0));
+  add('text', {x:W - R, y:H - 4, 'text-anchor':'end'}, fmtDate(t1));
+  svg.setAttribute('aria-label', `Geschatte capaciteit per meting, van ${number(Math.min(...caps), 1)} tot ${number(Math.max(...caps), 1)} kWh`);
+  $('sohChart').replaceChildren(svg);
+  $('sohRange').textContent = 'kWh per meting';
+}
+
 /* Navigatie */
 function showTab(name){
   if (name === 'history') loadSessions();
+  if (name === 'soh') loadSoh();
   if (name === 'home') requestAnimationFrame(fitHome);
   for (const tab of document.querySelectorAll('[data-tab]')) {
     tab.setAttribute('aria-selected', tab.dataset.tab === name);
